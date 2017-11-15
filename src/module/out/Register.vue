@@ -1,0 +1,388 @@
+<template>
+  <el-row>
+    <el-col>
+
+      <el-row class="out-content">
+        <el-col>
+          
+          <el-row class="step">
+            <el-col>
+              <el-steps :active="step" finish-status="success" :align-center="true">
+                <el-step title="基本注册"></el-step>
+                <el-step title="信息登记"></el-step>
+                <el-step title="完成注册"></el-step>
+              </el-steps>
+            </el-col>
+          </el-row>
+
+          <el-row v-if="step1" >
+            <el-col :offset="5" :span="14">
+              <el-row>
+                <el-col :span="16">
+                  <el-form ref="registerForm" :model="registerForm" :rules="registerRules" 
+                      @keyup.enter.native="register" label-width="100px" label-position="left" class="register-form">
+                    <el-form-item label="注册邮箱:" prop="email">
+                      <el-input v-model="registerForm.email" name="email"></el-input>
+                      <span class="text-tip">请输入常用邮箱，推荐使用企业邮箱</span>
+                      <el-button @click="doSendVerifyCode" :disabled="sendVerifyCodeDisabled">{{sendVerifyCode}}</el-button>
+                    </el-form-item>
+                    <el-form-item label="邮箱验证码:" prop="emailVerify">
+                      <el-input v-model="registerForm.emailVerify" name="emailVerify"></el-input>
+                      <span class="text-tip">激活邮箱后将收到验证邮件，请回填邮件中的6位验证码</span>
+                    </el-form-item>
+                    <el-form-item label="密码:" prop="password">
+                      <el-input v-model="registerForm.password" type="password" name="password"></el-input>
+                      <span class="text-tip">字母、数字或者英文符号，最短8位，区分大小写</span>
+                    </el-form-item>
+                    <el-form-item label="确认密码:" prop="reptyPassword">
+                      <el-input v-model="registerForm.reptyPassword" type="reptyPassword" name="password"></el-input>
+                      <span class="text-tip">请再次输入密码</span>
+                    </el-form-item>
+                    
+                    <el-form-item>
+                      <el-checkbox v-model="registerForm.checked" @change="agree">我已阅读并同意<span style="color:#33CCFF" @click="serverProtocol">《服务协议》</span></el-checkbox>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" @click="register" :disabled="registerDisabled">注册</el-button>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                  <el-col :span="8">
+                    <div class="right-content">
+                      已有账号？<span @click="toLogin" style="color:#3399FF;cursor:pointer;">立即登录</span>
+                    </div>
+                  </el-col>
+              </el-row>
+             
+            </el-col>
+          </el-row>
+
+          <el-row v-if="step2">
+            <el-col :offset="5" :span="14">
+              <el-form ref="infoForm" :model="infoForm" :rules="infoRules" 
+                  label-width="150px" label-position="left" class="register-form">
+                  
+                  <div class="info-form-content">
+                    <div style="padding-bottom:30px;">
+                      企业基本信息<hr/>
+                    </div>
+                    <el-form-item label="企业名称:" prop="companyName">
+                      <el-input v-model="infoForm.companyName" name="companyName"></el-input>
+                      <span class="text-tip">必须与企业营业执照上的企业名称完全一致，信息审核成功后，企业名称不可修改。</span>
+                    </el-form-item>
+                    <el-form-item label="是否三证合一:" prop="szhy">
+                      <el-radio v-model="infoForm.szhy" :label="true">是</el-radio>
+                      <el-radio v-model="infoForm.szhy" :label="false">否</el-radio>
+                    </el-form-item>
+                    <el-form-item label="营业执照号:" prop="yyzz">
+                      <el-input v-model="infoForm.yyzz" name="yyzz"></el-input>
+                      <span class="text-tip">请输入15位营业执照号或18位的统一社会信用代码</span>
+                    </el-form-item>
+                    <el-form-item label="营业执照图片:" prop="yyzzPicture">
+                      <el-button @click="upload('yyzzFile')">上传</el-button>
+                      <span class="text-tip">请上传原件照片或扫描件，或者加盖企业公章的复印件的扫面件，支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
+                      <img :src="demoPicture.yyzz" class="image">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('yyzzFile','yyzz')" ref="yyzzFile" multiple="multiple">
+                    </el-form-item>
+                    <el-form-item label="企业所在省市:" prop="city">
+                      <div class="block">
+                        <el-cascader
+                          expand-trigger="hover"
+                          :options="citys"
+                          v-model="citys"
+                          @change="cityHandleChange">
+                        </el-cascader>
+                      </div>
+                    </el-form-item>
+                    <el-form-item label="企业注册地址" prop="companyAddress">
+                      <el-input v-model="infoForm.companyAddress" name="companyAddress"></el-input>
+                    </el-form-item>
+                  </div>
+
+                  <div class="info-form-content">
+                    <div style="padding-bottom:30px;">
+                      运营者信息<hr/>
+                    </div>
+                    <el-form-item label="联系人姓名:" prop="contactName">
+                      <el-input v-model="infoForm.contactName" name="contactName"></el-input>
+                      <span class="text-tip">请输入联系人真实姓名</span>
+                    </el-form-item>
+                    <el-form-item label="联系人身份号码:" prop="contactIDCard">
+                      <el-input v-model="infoForm.contactIDCard" name="contactIDCard"></el-input>
+                      <span class="text-tip">请输入联系人身份号码</span>
+                    </el-form-item>
+                    <el-form-item label="联系人身份证正面照:" prop="idPicture">
+                      <div>
+                        <div class="inner-upload-left">
+                          <img :src="demoPicture.idDemo" class="image-demo">
+                          <span class="text-tip demo-position">参考示例</span>
+                        </div>
+                        <div class="inner-upload-right">
+                          <el-button @click="upload('idFile')">选择照片</el-button>
+                          <span class="text-tip">照片或扫描件包含身份证正面，且内容清晰可见。支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
+                        </div>
+                      </div>
+                      <img :src="demoPicture.id" class="image">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('idFile','id')" ref="idFile" multiple="multiple">
+                    </el-form-item>
+                    <el-form-item label="联系人身份证背面照:" prop="idBackPicture">
+                      <div>
+                        <div class="inner-upload-left">
+                          <img :src="demoPicture.idBackDemo" class="image-demo">
+                          <span class="text-tip demo-position">参考示例</span>
+                        </div>
+                        <div class="inner-upload-right">
+                          <el-button @click="upload('idBackFile')">选择照片</el-button>
+                          <span class="text-tip">照片或扫描件包含身份证正面，且内容清晰可见。支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
+                        </div>
+                      </div>
+                      <img :src="demoPicture.idBack" class="image">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('idBackFile','idBack')" ref="idBackFile" multiple="multiple">
+                    </el-form-item>
+                    <el-form-item label="联系人电子邮箱:" prop="contactEmail">
+                      <el-input v-model="infoForm.contactEmail" name="contactEmail"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系人电话" prop="contactPhone">
+                      <el-input v-model="infoForm.contactPhone" name="contactPhone"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" @click="infoSubmit">提交</el-button>
+                    </el-form-item>
+                  </div>
+
+
+              </el-form>
+            </el-col>
+          </el-row>
+       
+          <el-row v-if="step3" type="flex" justify="center" >
+            <el-col style="width:640px;">
+              <h1>恭喜您，完成布比开发者平台注册信息登记！</h1>
+              <span class="success">我们尽快审核您的登记信息，预计时间1-2个工作日，审核结果将发至您提供的邮箱</span>
+            </el-col>
+          </el-row>
+
+
+          
+
+        </el-col>
+      </el-row>
+  
+    </el-col>
+  </el-row>
+</template>
+
+<script>
+
+import {validatePassword,validateRepeatPassword} from "../../utils/ValidateRule"
+
+export default {
+  name: 'Register',
+  data () {
+    return {
+      demoPicture:{
+        yyzz:require('../../assets/picture/unchoose.png'),
+        idDemo:require('../../assets/picture/unchoose.png'),
+        id:require('../../assets/picture/unchoose.png'),
+        idBackDemo:require('../../assets/picture/unchoose.png'),
+        idBack:require('../../assets/picture/unchoose.png'),
+      },
+      citys:[{
+        value: '1',
+        label: '北京',
+        children: [{
+          value: '2',
+          label: '海淀',
+          },{
+          value: '3',
+          label: '朝阳',
+        }]
+      },{
+        value: '4',
+        label: '上海',
+        children: [{
+          value: '5',
+          label: '静安',
+          },{
+          value: '6',
+          label: '浦东',
+        }]
+      }],
+
+      step:0,
+      step1: true,
+      step2: false,
+      step3: false,
+      sendVerifyCode:'发送验证码',
+      sendVerifyCodeDisabled:false,
+      sendVerifyCodeWait:60,
+      registerDisabled:true,
+      registerForm:{
+        email:'',
+        emailVerify:'',
+        password:'',
+        reptyPassword:'',
+        checked:false,
+      },
+      registerRules:{     
+        email: [
+          { required: true,  message: '请输入注册邮箱', trigger: 'blur' },
+          { required: true, type: 'email', message: '请输入正确的注册邮箱', trigger: 'blur' }
+        ],
+        emailVerify: [
+          { required: true, message: '请输入邮箱验证码', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { validator: validatePassword, trigger: 'blur' }
+        ],
+        reptyPassword: [
+          { required: true, message: '请确认密码', trigger: 'blur' },
+          { validator: validateRepeatPassword, trigger: 'blur' }
+        ],
+      },
+      infoForm:{
+        companyName:'',
+        szhy:true,
+        yyzz:'',
+        yyzzPicture:'',
+        city:'',
+        companyAddress:'',
+        contactName:'',
+        contactIDCard:'',
+        idPicture:'',
+        idBackPicture:'',
+        contactEmail:'',
+        contactPhone:'',
+      },
+      infoRules:{
+        companyName: [
+          { required: true,  message: '请输入企业名称', trigger: 'blur' },
+        ],
+        yyzz: [
+          { required: true,  message: '请输入营业执照号', trigger: 'blur' },
+        ],
+        companyAddress: [
+          { required: true,  message: '请输入企业注册地址', trigger: 'blur' },
+        ],
+        contactName: [
+          { required: true,  message: '请输入联系人姓名', trigger: 'blur' },
+        ],
+        contactIDCard: [
+          { required: true,  message: '请输入联系人身份证号', trigger: 'blur' },
+        ],
+        contactEmail: [
+          { required: true,  message: '请输入联系人邮箱', trigger: 'blur' },
+        ],
+        contactPhone: [
+          { required: true,  message: '请输入联系人电话', trigger: 'blur' },
+        ],
+      },
+    }
+  },
+  methods:{
+    register(){
+      this.step++
+      this.step1=false
+      this.step2=true
+    },
+    infoSubmit(){
+      this.step++
+      this.step2=false
+      this.step3=true
+    },
+    agree(checked){
+      if(checked){
+        this.registerDisabled=false
+      }else{
+        this.registerDisabled=true
+      }
+    },
+    doSendVerifyCode(){
+     if (this.sendVerifyCodeWait == 0) {
+        this.sendVerifyCode='发送验证码'
+        this.sendVerifyCodeDisabled=false
+        this.sendVerifyCodeWait=60
+      } else { 
+        this.sendVerifyCodeDisabled=true;
+        this.sendVerifyCode="重新发送(" + this.sendVerifyCodeWait + ")";
+        this.sendVerifyCodeWait--;
+        setTimeout(this.doSendVerifyCode,1000)
+      }
+    },
+    serverProtocol(){
+      this.$notify.error({
+        title: '还没有',
+        message: '还没有'
+      });
+    },
+    toLogin(){
+      this.$router.push({
+        path: "/login"
+      })
+    },
+    cityHandleChange(value){
+      console.log(value)
+    },
+    upload(fileRef){
+      this.$refs[fileRef].click()
+    },
+    fileChanged(fileRef,attr){
+      const item = this.$refs[fileRef].files[0]
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        this.$set(this.demoPicture, attr, e.target.result)
+      }
+      reader.readAsDataURL(item)
+    },
+  }
+}
+</script>
+
+<style scoped>
+.step{
+  padding: 50px;
+}
+.register-form{
+  
+}
+.right-content{
+  float:right;
+  padding-left: 45px;
+  height: 400px;
+  border-left: 1px black solid;
+  border-left-color: #b4bccc;
+}
+.image{
+  width: 300px;
+  height: 200px;
+}
+.image-demo{
+  width: 80px;
+  height: 80px;
+}
+.text-tip{
+  color:#CCCCCC;
+  display: block;
+}
+.info-form-content{
+  padding-bottom: 50px;
+}
+.inner-upload-left{
+  display: inline-block;
+  width: 14%;
+}
+.inner-upload-right{
+  display: inline-block;
+  width: 85%;
+}
+.demo-position{
+  margin-top: -15px;
+  padding-left: 12px;
+}
+.success{
+  color:red;
+  padding-left:15px;
+  font-size: 16px;
+}
+</style>
