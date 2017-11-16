@@ -13,7 +13,7 @@
 
             <el-row>
               <el-col> 
-                <el-form ref="form" :model="form" :rules="rules" @keyup.enter.native="onSubmit" label-width="60px" label-position="left">
+                <el-form ref="form" :model="form" @keyup.enter.native="onSubmit" label-width="60px" label-position="left">
                   <el-form-item label="账号:" prop="username">
                     <el-input v-model="form.username" name="username"></el-input>
                   </el-form-item>
@@ -48,23 +48,12 @@ export default {
         username:'',
         password:'',
       },
-      rules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
-        ]
-      }
     }
   },
   methods:{
     onSubmit(){
-      this.$refs['form'].validate(valid => {
-        if (!valid) return false
-        this.$router.push({
-          path: "/main"
-        })
+      this.$router.push({
+        path: "/main"
       })
     },
     resetPassword(){
@@ -95,7 +84,6 @@ export default {
   padding-top: 50px;
 }
 .register-link{
-  display: inline-block;
   float: right;
 }
 .link{

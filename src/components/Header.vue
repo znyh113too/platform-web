@@ -2,18 +2,33 @@
   <el-row class="head" align="middle" type="flex">
     <el-col>
 
-      <el-row :v-if="!login">
+      <el-row >
         <el-col :span="4" :offset="1">
-          <span class="title">布比开发者平台</span>
+          <span class="title" @click="toMain">布比开发者平台</span>
         </el-col>
-        <el-col :offset="15" :span="2">
-          <el-button type="primary" @click="toLogin">登录</el-button>
-        </el-col>
-        <el-col :span="2">
-          <el-button type="primary" class="register" @click="toRegister">注册</el-button>
-        </el-col>
-      </el-row>
 
+        <div v-if="!login">
+          <el-col :offset="15" :span="2">
+            <el-button type="primary" @click="toLogin">登录</el-button>
+          </el-col>
+          <el-col :span="2">
+            <el-button type="primary" class="register" @click="toRegister">注册</el-button>
+          </el-col>
+        </div>
+
+        <div v-if="login">
+          <el-col :offset="11" :span="2">
+            <span class="top-menu">消息</span>
+          </el-col>
+          <el-col :span="2">
+            <span class="top-menu">工单</span>
+          </el-col>
+          <el-col :span="2">
+            <span class="top-menu">1333333333@qq.com</span>
+          </el-col>
+        </div>
+        
+      </el-row>
       
     </el-col>
   </el-row>
@@ -32,6 +47,11 @@ export default {
     toLogin() {
       this.$router.push({
         path: "/login"
+      })
+    },
+    toMain() {
+      this.$router.push({
+        path: "/main"
       })
     },
     toRegister() {
@@ -53,5 +73,8 @@ export default {
   font-size: 24px;
   color: #409EFF;
   height: 100%;
+}
+.top-menu{
+  line-height: 40px;
 }
 </style>

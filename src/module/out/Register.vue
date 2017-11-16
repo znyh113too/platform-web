@@ -343,9 +343,6 @@ export default {
 .step{
   padding: 50px;
 }
-.register-form{
-  
-}
 .right-content{
   float:right;
   padding-left: 45px;
