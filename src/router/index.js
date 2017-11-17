@@ -8,6 +8,8 @@ import InnerMain from '@/module/inner/InnerMain'
 import ApplicationList from '@/module/application/ApplicationList'
 import AddApplication from '@/module/application/AddApplication'
 import CheckResult from '@/module/application/CheckResult'
+import ApplicationDetail from '@/module/application/ApplicationDetail'
+import Pay from '@/module/server/Pay'
 
 Vue.use(Router)
 
@@ -53,6 +55,16 @@ export default new Router({
           path: '/checkResult',
           name: 'CheckResult',
           component: CheckResult,
+        },
+        {
+          path: '/applicationDetail',
+          name: 'ApplicationDetail',
+          component: ApplicationDetail,
+        },
+        {
+          path: '/pay',
+          name: 'Pay',
+          component: Pay,
         },
       ]
     },

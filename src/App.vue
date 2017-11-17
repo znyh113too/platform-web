@@ -17,4 +17,7 @@ body{
 .out-content{
   height: 600px;
 }
+.right{
+  float: right;
+}
 </style>

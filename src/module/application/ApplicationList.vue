@@ -19,7 +19,7 @@
         <el-row>
           <el-col>
 
-            <div class="card">
+            <div class="card" @click="toDetail">
               <img :src="unchoose" class="icon">
               <span class="icon-title">万优食品溯源</span>
               <span class="state use">使用中</span>
@@ -62,6 +62,11 @@ export default {
     routerAddApplication(){
       this.$router.push({
         path: "/addApplication"
+      })
+    },
+    toDetail(){
+      this.$router.push({
+        path: "/applicationDetail"
       })
     },
   }
