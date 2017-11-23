@@ -14,10 +14,10 @@
               <el-form-item label="应用图标:" prop="icon">
                 <img :src="unchoose" class="icon-picture" @click="upload('iconFile')">
                 <span class="text-tip picture-tip">格式支持png，推荐大小98*98像素图片</span>
-                <input style="display:none;" type="file" accept="image/*" @change="fileChanged('iconFile','unchoose')" ref="iconFile" multiple="multiple">
+                <input style="display:none;" type="file" accept="image/*" @change="fileChanged('iconFile','unchoose','icon')" ref="iconFile" multiple="multiple">
               </el-form-item>
-              <el-form-item label="应用名称:" prop="applicatonName">
-                <el-input v-model="form.applicatonName"  name="applicatonName"></el-input>
+              <el-form-item label="应用名称:" prop="name">
+                <el-input v-model="form.name"  name="name"></el-input>
                 <span class="text-tip">请输入您的应用名称</span>
               </el-form-item>
               <el-form-item label="主营行业:" prop="industry">
@@ -25,12 +25,12 @@
                   <el-option v-for="item in industry" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="官网网址:" prop="webAddress">
-                <el-input v-model="form.webAddress"  name="webAddress"></el-input>
+              <el-form-item label="官网网址:" prop="domain">
+                <el-input v-model="form.domain"  name="domain"></el-input>
                 <span class="text-tip">请输入您的官网网址，以便客户了解更多信息</span>
               </el-form-item>
-              <el-form-item label="应用描述:" prop="applicationDesc">
-                <el-input type="textarea" :rows="3" v-model="form.applicationDesc"  name="applicationDesc"></el-input>
+              <el-form-item label="应用描述:" prop="description">
+                <el-input type="textarea" :rows="3" v-model="form.description"  name="description"></el-input>
               </el-form-item>
             </el-form>
 
@@ -53,6 +53,7 @@
 
 
 <script>
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name:'AddApplication',
@@ -75,46 +76,63 @@ export default {
       }],
       form:{
         icon:'',
-        applicatonName:'',
+        type:1,
+        name:'',
         industry:'',
-        webAddress:'',
-        applicationDesc:'',
+        domain:'',
+        description:'',
       },
       rules:{
         icon: [
           { required: true,  message: '请选择图标', trigger: 'blur' },
         ],
-        applicatonName: [
+        name: [
           { required: true,  message: '请输入应用名称', trigger: 'blur' },
         ],
         industry: [
           { required: true,  message: '请选择行业', trigger: 'blur' },
         ],
-        webAddress: [
+        domain: [
           { required: true,  message: '请输入官网地址', trigger: 'blur' },
         ],
-        applicationDesc: [
+        description: [
           { required: true,  message: '请输入应用描述', trigger: 'blur' },
         ],
       },
     }
   },
   methods:{
+    ...mapActions([
+     'addApplication',
+     'uploadPicture',
+    ]),
     next(){
-      this.$router.push({
-        path: "/checkResult"
+      this.$refs['form'].validate((valid) => {
+        this.addApplication(this.form).then(() => {
+          this.$router.push({
+            path: "/checkResult"
+          })
+        }).catch(err => {
+          this.$alert(err)
+        })
       })
     },
     upload(fileRef){
       this.$refs[fileRef].click()
     },
-    fileChanged(fileRef,attr){
+    fileChanged(fileRef,attr,formAttr){
       const item = this.$refs[fileRef].files[0]
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        this.$set(this, attr, e.target.result)
-      }
-      reader.readAsDataURL(item)
+      this.uploadPicture(item).then(path=>{
+        this.form[formAttr]=path
+        
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          this.$set(this, attr, e.target.result)
+        }
+        reader.readAsDataURL(item)
+      }).catch(err => {
+        this.$alert(err)
+      })
     },
   }
 }

@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Login',
@@ -51,10 +52,22 @@ export default {
     }
   },
   methods:{
+    ...mapActions([
+      'login'
+    ]),
     onSubmit(){
-      this.$router.push({
-        path: "/main"
-      })
+      if(this.form.username && this.form.password){
+          this.login(this.form).then(({ userToken }) => {
+            localStorage.setItem('X-PLATFORM-TOKEN', userToken)
+            this.$router.push({
+              path: "/main"
+            })
+          }).catch(err => {
+            this.$alert(err)
+          })
+      }else{
+        this.$alert('请输入账号与密码')
+      }
     },
     resetPassword(){
        this.$notify.error({
@@ -67,7 +80,7 @@ export default {
         path: "/register"
       })
     }
-  }
+  },
 }
 </script>
 

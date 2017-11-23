@@ -18,29 +18,30 @@
           <el-col :span="12">
             <div class="info-content">
               <label>商户号</label>
-              <span>1277992701</span>
+              <span>{{configPay.merchantNo}}</span>
             </div>
             <div class="info-content">
               <label>商户密钥</label>
-              <el-button size="medium" type="text">显示</el-button>
+              <el-button v-if="!showSecret" type="text" size="medium" @click="doShowSecret">显示</el-button>
+              <el-button v-if="showSecret" type="text" size="medium">{{configPay.merchantKey}}</el-button>
             </div>
             <div class="info-content">
               <label>公司名称</label>
-              <span>布比(北京)网络技术有限公司</span>
+              <span>{{configPay.merchantName}}</span>
             </div>
           </el-col>
           <el-col :span="12" class="info-right">
             <div class="info-content">
               <label>联系人</label>
-              <span>张三</span>
+              <span>{{configPay.contactName}}</span>
             </div>
             <div class="info-content">
               <label>手机号码</label>
-              <span>15001265888</span>
+              <span>{{configPay.contactPhone}}</span>
             </div>
             <div class="info-content">
               <label>联系邮箱</label>
-              <span>15001265888@qq.com</span>
+              <span>{{configPay.contactEmail}}</span>
             </div>
           </el-col>
         </el-row>
@@ -75,11 +76,13 @@
 
 
 <script>
+import { mapActions, mapState } from 'vuex'
 
 export default {
-  name:'ApplicationList',
+  name:'Pay',
   data() {
     return {
+      showSecret:false,
       infoShow:true,
       configShow:false,
       guideShow:false,
@@ -96,7 +99,21 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapState({
+      configPay: state => state.pay.configPay
+    }),
+  },
+  mounted() {
+    this.getConfigPay()
+  },
   methods:{
+    ...mapActions([
+      'getConfigPay'
+    ]),
+    doShowSecret(){
+      this.showSecret=true
+    },
     handleSelect(key, keyPath) {
       this.infoShow=false;
       this.configShow=false;

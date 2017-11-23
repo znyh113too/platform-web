@@ -9,19 +9,19 @@
 
         <el-row style="padding-top:20px;">
           <el-col :span="2">
-            <img :src="unchoose" class="icon">
+            <img :src="applicationInfo.appIcon" class="icon">
           </el-col>
           <el-col :span="22">
             <div class="header-content">
-              <span class="title">万优食品溯源</span>
+              <span class="title">{{applicationInfo.appName}}</span>
 
               <div class="right">
                 <el-button size="small" class="mock-button env">正式环境</el-button>
-                <el-button size="small" class="mock-button check">审核中</el-button>
+                <el-button size="small" class="mock-button check">{{applicationInfo.appStatusName}}</el-button>
               </div>
             </div>
 
-            <span class="desc">万优食品溯源是结合供应链的特性对区块链的接口进行继承、封装以及应用扩展，使每一个物品静态（固有特性）和动态（流转、信用）等信息能够在生产制造企业、仓储企业、物流企业、各级分销商、零售商、电商、消费者以及政府监管机构中共享、共识。</span>
+            <span class="desc">{{applicationInfo.appDescription}}</span>
 
             <div class="main-content">
               <span style="font-size:17px;">开发应用信息</span>
@@ -33,7 +33,7 @@
                 </div>
                  <div class="right-content">
                    <el-button type="text" size="medium">&nbsp;</el-button>
-                  bd23ae1252f7337b08
+                  {{applicationInfo.appId}}
                 </div>
               </div>
 
@@ -43,15 +43,16 @@
                   <label>(app_secret)</label>
                 </div>
                 <div class="right-content">
-                  <el-button type="text" size="medium">显示</el-button>
+                  <el-button v-if="!showSecret" type="text" size="medium" @click="doShowSecret">显示</el-button>
+                  <el-button v-if="showSecret" type="text" size="medium">{{applicationInfo.appSecret}}</el-button>
                   <span class="desc">应用密钥是校验布比区块链开发者应用身份的密码，属于敏感内容。切记不要讲其直接给第三方或直接存储在代码中。</span>
                 </div>
               </div>
 
               <div class="line-content">
                 <div class="left-label">
-                  <span>应用ID</span>
-                  <label>(app_id)</label>
+                  <span>ip白名单</span>
+                  <label>(white_ips)</label>
                 </div>
                 <div class="right-content">
                   <el-button type="text" size="medium">配置</el-button>
@@ -62,12 +63,12 @@
               <div class="server">
                 <div class="have-server">
                   <span class="title server-header">已开通服务</span>
-                  <div class="server-content">
-                    <span class="group">信用</span>
-                    <div class="card" @click="toServerPay">
+                  <div class="server-content" v-for="(item, index) in applicationInfo.myOpenedAppPacks" :key="item.packCode">
+                    <span class="group">{{item.packName}}</span>
+                    <div class="card" @click="toServiceDetail(item)">
                       <img :src="unchoose" class="card-icon">
-                      <label class="card-title">布丁信用评分</label>
-                      <span class="card-desc">查询用户的信用评分</span>
+                      <label class="card-title">{{item.packName}}</label>
+                      <span class="card-desc">{{item.packDescription}}</span>
                     </div>
                   </div>
                 </div>
@@ -75,13 +76,13 @@
 
               <div class="server">
                 <div class="have-server">
-                  <span class="title server-header">可开通服务</span>
-                  <div class="server-content">
-                    <span class="group">支付</span>
-                    <div class="card">
+                  <span class="title server-header" >可开通服务</span>
+                  <div class="server-content" v-for="(item, index) in applicationInfo.myOpeningAppPacks" :key="item.packCode">
+                    <span class="group">{{item.packName}}</span>
+                    <div class="card" @click="openService(item)">
                       <img :src="unchoose" class="card-icon">
-                      <label class="card-title">布丁信用评分</label>
-                      <span class="card-desc">查询用户的信用评分</span>
+                      <label class="card-title">{{item.packName}}</label>
+                      <span class="card-desc">{{item.packDescription}}</span>
                     </div>
                   </div>
                 </div>
@@ -99,25 +100,80 @@
 
 
 <script>
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name:'ApplicationList',
   data() {
     return {
+      showSecret:false,
       unchoose:require('../../assets/picture/unchoose.png'),
     }
   },
+  computed: {
+    ...mapState({
+      applicationInfo: state => {
+        let applicationDetailTemp = state.application.applicationDetail
+        applicationDetailTemp.appStatusName=applicationDetailTemp.appStatus==='1'?'使用中':'审核中'
+        return applicationDetailTemp
+      }
+    }),
+  },
   methods:{
+     ...mapActions([
+     'applicationDetail',
+     'applicationOpenServer',
+    ]),
+    getParams() {
+      let params = this.$route.params
+      console.log(params)
+      this.applicationDetail({appId:params.appId,appApplyId:params.appApplyId})
+    },
+    doShowSecret(){
+      if(this.applicationInfo.appStatus==='1'){
+        this.showSecret=true
+      }else{
+        this.$alert('只有使用中应用才分配秘钥')
+      }
+    },
+    openService(item){
+      if(this.applicationInfo.appStatus==='1'){
+        this.$confirm('是否确认开通'+item.packName+'服务?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).then(() => {
+          // open
+          this.applicationOpenServer({appId:this.applicationInfo.appId,servicePackCode:item.packCode}).then(()=>{
+            this.getParams()
+          }).catch((err) => {
+            this.$alert(err)
+          })
+        }).catch(() => {
+          // cancel
+        });
+      }else{
+        this.$alert('只有使用中应用才能开通服务')
+      }
+    },
     toMyApplication(){
       this.$router.push({
         path: "/main"
       })
     },
-    toServerPay(){
-      this.$router.push({
-        path: "/pay"
-      })
+    toServiceDetail(item){
+      if(item.packName==='支付服务'){
+        this.$router.push({
+          path: "/pay"
+        })
+      }
     },
+  },
+  created () {
+    this.getParams()
+  },
+  watch: {
+    '$route': 'getParams'
   }
 }
 </script>
@@ -147,6 +203,7 @@ export default {
 .my-application{
   float: right;
   color: #0066FF;
+  cursor: pointer;
 }
 .icon{
   height: 80px;
@@ -229,6 +286,8 @@ export default {
 .server .server-content{
   padding-left: 10px;
   margin-bottom: 20px;
+  width: 330px;
+  display: inline-block;
 }
 </style>
 

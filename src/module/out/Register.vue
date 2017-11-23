@@ -35,7 +35,7 @@
                       <span class="text-tip">字母、数字或者英文符号，最短8位，区分大小写</span>
                     </el-form-item>
                     <el-form-item label="确认密码:" prop="reptyPassword">
-                      <el-input v-model="registerForm.reptyPassword" type="reptyPassword" name="password"></el-input>
+                      <el-input v-model="registerForm.reptyPassword" type="password" name="reptyPassword"></el-input>
                       <span class="text-tip">请再次输入密码</span>
                     </el-form-item>
                     
@@ -70,26 +70,26 @@
                       <el-input v-model="infoForm.companyName" name="companyName"></el-input>
                       <span class="text-tip">必须与企业营业执照上的企业名称完全一致，信息审核成功后，企业名称不可修改。</span>
                     </el-form-item>
-                    <el-form-item label="是否三证合一:" prop="szhy">
-                      <el-radio v-model="infoForm.szhy" :label="true">是</el-radio>
-                      <el-radio v-model="infoForm.szhy" :label="false">否</el-radio>
+                    <el-form-item label="是否三证合一:" prop="certificates">
+                      <el-radio v-model="infoForm.certificates" :label="1">是</el-radio>
+                      <el-radio v-model="infoForm.certificates" :label="0">否</el-radio>
                     </el-form-item>
-                    <el-form-item label="营业执照号:" prop="yyzz">
-                      <el-input v-model="infoForm.yyzz" name="yyzz"></el-input>
+                    <el-form-item label="营业执照号:" prop="businessNo">
+                      <el-input v-model="infoForm.businessNo" name="businessNo"></el-input>
                       <span class="text-tip">请输入15位营业执照号或18位的统一社会信用代码</span>
                     </el-form-item>
-                    <el-form-item label="营业执照图片:" prop="yyzzPicture">
+                    <el-form-item label="营业执照图片:" prop="businessPath">
                       <el-button @click="upload('yyzzFile')">上传</el-button>
                       <span class="text-tip">请上传原件照片或扫描件，或者加盖企业公章的复印件的扫面件，支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
-                      <img :src="demoPicture.yyzz" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('yyzzFile','yyzz')" ref="yyzzFile" multiple="multiple">
+                      <img :src="showPicture.yyzz" class="image">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('yyzzFile','yyzz','businessPath')" ref="yyzzFile" multiple="multiple">
                     </el-form-item>
-                    <el-form-item label="企业所在省市:" prop="city">
+                    <el-form-item label="企业所在省市:" prop="companyCity">
                       <div class="block">
                         <el-cascader
                           expand-trigger="hover"
                           :options="citys"
-                          v-model="citys"
+                          v-model="selectedCitys"
                           @change="cityHandleChange">
                         </el-cascader>
                       </div>
@@ -107,14 +107,14 @@
                       <el-input v-model="infoForm.contactName" name="contactName"></el-input>
                       <span class="text-tip">请输入联系人真实姓名</span>
                     </el-form-item>
-                    <el-form-item label="联系人身份号码:" prop="contactIDCard">
-                      <el-input v-model="infoForm.contactIDCard" name="contactIDCard"></el-input>
+                    <el-form-item label="联系人身份号码:" prop="contactCardId">
+                      <el-input v-model="infoForm.contactCardId" name="contactCardId"></el-input>
                       <span class="text-tip">请输入联系人身份号码</span>
                     </el-form-item>
-                    <el-form-item label="联系人身份证正面照:" prop="idPicture">
+                    <el-form-item label="联系人身份证正面照:" prop="contactCardFront">
                       <div>
                         <div class="inner-upload-left">
-                          <img :src="demoPicture.idDemo" class="image-demo">
+                          <img :src="showPicture.idDemo" class="image-demo">
                           <span class="text-tip demo-position">参考示例</span>
                         </div>
                         <div class="inner-upload-right">
@@ -122,13 +122,13 @@
                           <span class="text-tip">照片或扫描件包含身份证正面，且内容清晰可见。支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
                         </div>
                       </div>
-                      <img :src="demoPicture.id" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('idFile','id')" ref="idFile" multiple="multiple">
+                      <img :src="showPicture.id" class="image">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('idFile','id','contactCardFront')" ref="idFile" multiple="multiple">
                     </el-form-item>
-                    <el-form-item label="联系人身份证背面照:" prop="idBackPicture">
+                    <el-form-item label="联系人身份证背面照:" prop="contactCardBack">
                       <div>
                         <div class="inner-upload-left">
-                          <img :src="demoPicture.idBackDemo" class="image-demo">
+                          <img :src="showPicture.idBackDemo" class="image-demo">
                           <span class="text-tip demo-position">参考示例</span>
                         </div>
                         <div class="inner-upload-right">
@@ -136,8 +136,8 @@
                           <span class="text-tip">照片或扫描件包含身份证正面，且内容清晰可见。支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
                         </div>
                       </div>
-                      <img :src="demoPicture.idBack" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('idBackFile','idBack')" ref="idBackFile" multiple="multiple">
+                      <img :src="showPicture.idBack" class="image">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('idBackFile','idBack','contactCardBack')" ref="idBackFile" multiple="multiple">
                     </el-form-item>
                     <el-form-item label="联系人电子邮箱:" prop="contactEmail">
                       <el-input v-model="infoForm.contactEmail" name="contactEmail"></el-input>
@@ -162,9 +162,6 @@
             </el-col>
           </el-row>
 
-
-          
-
         </el-col>
       </el-row>
   
@@ -174,44 +171,46 @@
 
 <script>
 
-import {validatePassword,validateRepeatPassword} from "../../utils/ValidateRule"
+import { mapActions, mapState } from 'vuex'
+import {validatePassword,validateRepeatPassword} from "../../utils/validateRule"
 
 export default {
   name: 'Register',
   data () {
     return {
-      demoPicture:{
+      showPicture:{
         yyzz:require('../../assets/picture/unchoose.png'),
         idDemo:require('../../assets/picture/unchoose.png'),
         id:require('../../assets/picture/unchoose.png'),
         idBackDemo:require('../../assets/picture/unchoose.png'),
         idBack:require('../../assets/picture/unchoose.png'),
       },
+      selectedCitys:[],
       citys:[{
-        value: '1',
+        value: '北京',
         label: '北京',
         children: [{
-          value: '2',
+          value: ',海淀',
           label: '海淀',
           },{
-          value: '3',
+          value: ',朝阳',
           label: '朝阳',
         }]
       },{
-        value: '4',
+        value: '上海',
         label: '上海',
         children: [{
-          value: '5',
+          value: ',静安',
           label: '静安',
           },{
-          value: '6',
+          value: ',浦东',
           label: '浦东',
         }]
       }],
 
       step:0,
-      step1: true,
-      step2: false,
+      step1: false,
+      step2: true,
       step3: false,
       sendVerifyCode:'发送验证码',
       sendVerifyCodeDisabled:false,
@@ -243,15 +242,15 @@ export default {
       },
       infoForm:{
         companyName:'',
-        szhy:true,
-        yyzz:'',
-        yyzzPicture:'',
-        city:'',
+        certificates:1,
+        businessNo:'',
+        businessPath:'',
+        companyCity:'',
         companyAddress:'',
         contactName:'',
-        contactIDCard:'',
-        idPicture:'',
-        idBackPicture:'',
+        contactCardId:'',
+        contactCardFront:'',
+        contactCardBack:'',
         contactEmail:'',
         contactPhone:'',
       },
@@ -259,7 +258,7 @@ export default {
         companyName: [
           { required: true,  message: '请输入企业名称', trigger: 'blur' },
         ],
-        yyzz: [
+        businessNo: [
           { required: true,  message: '请输入营业执照号', trigger: 'blur' },
         ],
         companyAddress: [
@@ -268,7 +267,7 @@ export default {
         contactName: [
           { required: true,  message: '请输入联系人姓名', trigger: 'blur' },
         ],
-        contactIDCard: [
+        contactCardId: [
           { required: true,  message: '请输入联系人身份证号', trigger: 'blur' },
         ],
         contactEmail: [
@@ -281,15 +280,31 @@ export default {
     }
   },
   methods:{
+    ...mapActions([
+      'sendEmailVerifyCode',
+      'registerDeveloper',
+      'uploadPicture',
+      'registerCompany',
+    ]),
     register(){
-      this.step++
-      this.step1=false
-      this.step2=true
+      this.$refs['registerForm'].validate((valid) => {
+        this.registerDeveloper(this.registerForm).then(({userToken}) => {
+          this.step++;this.step1=false;this.step2=true
+          localStorage.setItem('X-PLATFORM-TOKEN', userToken)
+          this.$alert('注册成功，请补全登记信息')
+        }).catch(err => {
+          this.$alert(err)
+        })
+      })
     },
     infoSubmit(){
-      this.step++
-      this.step2=false
-      this.step3=true
+      this.$refs['infoForm'].validate((valid) => {
+        this.registerCompany(this.infoForm).then(() => {
+          this.step++;this.step2=false;this.step3=true
+        }).catch(err => {
+          this.$alert(err)
+        })
+      })
     },
     agree(checked){
       if(checked){
@@ -299,7 +314,19 @@ export default {
       }
     },
     doSendVerifyCode(){
-     if (this.sendVerifyCodeWait == 0) {
+      // todo 指定表单域验证
+      if(this.registerForm.email){
+        this.sendEmailVerifyCode({'email':this.registerForm.email}).then(()=>{
+          this.doSendVerifyCodeAnimation()
+          this.$alert('发送成功，请查收!')
+        }).catch(err => {
+          this.$alert(err)
+        })
+       
+      }
+    },
+    doSendVerifyCodeAnimation(){
+      if (this.sendVerifyCodeWait == 0) {
         this.sendVerifyCode='发送验证码'
         this.sendVerifyCodeDisabled=false
         this.sendVerifyCodeWait=60
@@ -307,7 +334,7 @@ export default {
         this.sendVerifyCodeDisabled=true;
         this.sendVerifyCode="重新发送(" + this.sendVerifyCodeWait + ")";
         this.sendVerifyCodeWait--;
-        setTimeout(this.doSendVerifyCode,1000)
+        setTimeout(this.doSendVerifyCodeAnimation,1000)
       }
     },
     serverProtocol(){
@@ -322,18 +349,29 @@ export default {
       })
     },
     cityHandleChange(value){
-      console.log(value)
+      let str=''
+      for(let key in value){
+        str+=value[key]
+      }
+      console.log(str)
+      this.infoForm.companyCity = str
     },
     upload(fileRef){
       this.$refs[fileRef].click()
     },
-    fileChanged(fileRef,attr){
+    fileChanged(fileRef,attr,formAttr){
       const item = this.$refs[fileRef].files[0]
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        this.$set(this.demoPicture, attr, e.target.result)
-      }
-      reader.readAsDataURL(item)
+      this.uploadPicture(item).then(path=>{
+        this.infoForm[formAttr]=path
+        
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          this.$set(this.showPicture, attr, e.target.result)
+        }
+        reader.readAsDataURL(item)
+      }).catch(err => {
+        this.$alert(err)
+      })
     },
   }
 }

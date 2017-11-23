@@ -8,8 +8,8 @@
 
         <el-row style="margin-top:30px;">
           <el-col :span="4">
-            <el-button class="mock-button">全部</el-button>
-            <el-button class="mock-button">已生效</el-button>
+            <el-button class="mock-button" @click="searchAll()">全部</el-button>
+            <el-button class="mock-button" @click="searchEffect()">已生效</el-button>
           </el-col>
           <el-col :offset="17" :span="2">
             <el-button @click="routerAddApplication">添加应用</el-button>
@@ -19,26 +19,16 @@
         <el-row>
           <el-col>
 
-            <div class="card" @click="toDetail">
-              <img :src="unchoose" class="icon">
-              <span class="icon-title">万优食品溯源</span>
-              <span class="state use">使用中</span>
+            <div class="card" v-for="(item, index) in applications" :key="item.appId" @click="toDetail(item)">
+              <img :src="item.appIcon" class="icon">
+              <span class="icon-title">{{item.appName}}</span>
+              <span class="state check">{{item.appStatusName}}</span>
               <div class="desc">
-                万优食品溯源是结合供应链的特性对区块链的接口进行继承、封装以及······
-              </div>
-              <span class="env-box">沙箱环境</span>
-            </div>
-
-            <div class="card">
-              <img :src="unchoose" class="icon">
-              <span class="icon-title">万优食品溯源</span>
-              <span class="state check">审核中</span>
-              <div class="desc">
-                万优食品溯源是结合供应链的特性对区块链的接口进行继承、封装以及······
+                {{item.appDescription}}
               </div>
               <span class="env-box">正式环境</span>
             </div>
-            
+
           </el-col>
         </el-row>
 
@@ -50,6 +40,8 @@
 
 
 <script>
+import { mapActions, mapState } from 'vuex'
+import {getStateName} from '../../core/applicationState'
 
 export default {
   name:'ApplicationList',
@@ -58,15 +50,38 @@ export default {
       unchoose:require('../../assets/picture/unchoose.png'),
     }
   },
+  computed: {
+    ...mapState({
+      applications: state => {
+        let applicationListTemp = state.application.applicationList
+        applicationListTemp.forEach(item=>item.appStatusName=getStateName(item.appStatus))
+        return applicationListTemp
+      }
+    }),
+  },
+  mounted() {
+    this.applicationList({})
+  },
   methods:{
+    ...mapActions([
+     'applicationList',
+     'applicationListEffect',
+    ]),
+    searchAll(){
+      this.applicationList()
+    },
+    searchEffect(){
+      this.applicationListEffect()
+    },
     routerAddApplication(){
       this.$router.push({
         path: "/addApplication"
       })
     },
-    toDetail(){
+    toDetail(item){
+      console.log(item)
       this.$router.push({
-        path: "/applicationDetail"
+        path: "/applicationDetail/"+item.appId+"/"+item.appApplyId,
       })
     },
   }

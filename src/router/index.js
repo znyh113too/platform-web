@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store, { types } from '../store'
 import OutMain from '@/module/out/OutMain'
 import OutHome from '@/module/out/Home'
 import Login from '@/module/out/Login'
@@ -13,7 +14,7 @@ import Pay from '@/module/server/Pay'
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   routes: [
     {
       path: '/',
@@ -57,7 +58,7 @@ export default new Router({
           component: CheckResult,
         },
         {
-          path: '/applicationDetail',
+          path: '/applicationDetail/:appId/:appApplyId',
           name: 'ApplicationDetail',
           component: ApplicationDetail,
         },
@@ -70,3 +71,21 @@ export default new Router({
     },
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if(!canAccess(to.path)){
+    console.log(to.path)
+    let token = localStorage.getItem('X-PLATFORM-TOKEN')
+    if (!token) {
+      return next({ path: '/login' });
+    }
+  }
+  return next()
+})
+
+function canAccess(path){
+  return path==='/' || path==='/login' || path==='/register'
+}
+
+export default router
+  

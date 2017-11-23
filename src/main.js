@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 import configure from './configure'
 
 function load() {
@@ -12,7 +13,7 @@ function load() {
   new Vue({
     el: '#app',
     router,
-    // store,
+    store,
     template: '<App/>',
     components: { App }
   })

@@ -1,5 +1,5 @@
 
-const validatePassword = (rule, value, callback) => {
+export const validatePassword = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入密码'));
   } else {
@@ -10,7 +10,7 @@ const validatePassword = (rule, value, callback) => {
   }
 };
 
-const validateRepeatPassword = (rule, value, callback) => {
+export const validateRepeatPassword = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请再次输入密码'));
   } else if (value !== this.registerForm.password) {
