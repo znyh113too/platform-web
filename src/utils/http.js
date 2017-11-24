@@ -16,7 +16,7 @@ const methodDelete = 'delete';
 const callService = async (url, opts, method, headers) => {
   if (!opts) opts = {};
 
-  if(url.indexOf("?") != -1){
+  if(url.indexOf("?") !== -1){
     url=url+'&userToken='+localStorage.getItem('X-PLATFORM-TOKEN')
   }else{
     url=url+'?userToken='+localStorage.getItem('X-PLATFORM-TOKEN')

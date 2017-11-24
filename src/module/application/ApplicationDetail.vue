@@ -16,7 +16,7 @@
               <span class="title">{{applicationInfo.appName}}</span>
 
               <div class="right">
-                <el-button size="small" class="mock-button env">正式环境</el-button>
+                <el-button size="small" class="mock-button env">{{applicationInfo.accessScopeName}}</el-button>
                 <el-button size="small" class="mock-button check">{{applicationInfo.appStatusName}}</el-button>
               </div>
             </div>
@@ -66,7 +66,7 @@
                   <div class="server-content" v-for="(item, index) in applicationInfo.myOpenedAppPacks" :key="item.packCode">
                     <span class="group">{{item.packName}}</span>
                     <div class="card" @click="toServiceDetail(item)">
-                      <img :src="unchoose" class="card-icon">
+                      <img :src="choosePicture(item)" class="card-icon">
                       <label class="card-title">{{item.packName}}</label>
                       <span class="card-desc">{{item.packDescription}}</span>
                     </div>
@@ -80,7 +80,7 @@
                   <div class="server-content" v-for="(item, index) in applicationInfo.myOpeningAppPacks" :key="item.packCode">
                     <span class="group">{{item.packName}}</span>
                     <div class="card" @click="openService(item)">
-                      <img :src="unchoose" class="card-icon">
+                      <img :src="choosePicture(item)" class="card-icon">
                       <label class="card-title">{{item.packName}}</label>
                       <span class="card-desc">{{item.packDescription}}</span>
                     </div>
@@ -101,6 +101,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import {getStateName,getApplicationEvn} from '../../core/applicationState'
 
 export default {
   name:'ApplicationList',
@@ -114,7 +115,8 @@ export default {
     ...mapState({
       applicationInfo: state => {
         let applicationDetailTemp = state.application.applicationDetail
-        applicationDetailTemp.appStatusName=applicationDetailTemp.appStatus==='1'?'使用中':'审核中'
+        applicationDetailTemp.appStatusName=getStateName(applicationDetailTemp.appStatus)
+        applicationDetailTemp.accessScopeName=getApplicationEvn(applicationDetailTemp.accessScope) || '未知环境'
         return applicationDetailTemp
       }
     }),
@@ -128,6 +130,9 @@ export default {
       let params = this.$route.params
       console.log(params)
       this.applicationDetail({appId:params.appId,appApplyId:params.appApplyId})
+    },
+    choosePicture(item){
+      return require('../../assets/picture/'+item.packName+'.png')
     },
     doShowSecret(){
       if(this.applicationInfo.appStatus==='1'){
@@ -218,6 +223,7 @@ export default {
   display: block;
 }
 .mock-button{
+  cursor: auto;
   border-radius: 0;
 }
 .env{

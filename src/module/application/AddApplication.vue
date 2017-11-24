@@ -108,13 +108,15 @@ export default {
     ]),
     next(){
       this.$refs['form'].validate((valid) => {
-        this.addApplication(this.form).then(() => {
-          this.$router.push({
-            path: "/checkResult"
+        if (valid) {
+          this.addApplication(this.form).then(() => {
+            this.$router.push({
+              path: "/checkResult"
+            })
+          }).catch(err => {
+            this.$alert(err)
           })
-        }).catch(err => {
-          this.$alert(err)
-        })
+        }
       })
     },
     upload(fileRef){

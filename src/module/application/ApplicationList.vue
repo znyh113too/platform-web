@@ -26,7 +26,7 @@
               <div class="desc">
                 {{item.appDescription}}
               </div>
-              <span class="env-box">正式环境</span>
+              <span class="env-box">{{item.accessScopeName}}</span>
             </div>
 
           </el-col>
@@ -41,7 +41,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import {getStateName} from '../../core/applicationState'
+import {getStateName,getApplicationEvn} from '../../core/applicationState'
 
 export default {
   name:'ApplicationList',
@@ -54,7 +54,10 @@ export default {
     ...mapState({
       applications: state => {
         let applicationListTemp = state.application.applicationList
-        applicationListTemp.forEach(item=>item.appStatusName=getStateName(item.appStatus))
+        applicationListTemp.forEach(item=>{
+          item.appStatusName=getStateName(item.appStatus)
+          item.accessScopeName=getApplicationEvn(item.accessScope)
+        })
         return applicationListTemp
       }
     }),

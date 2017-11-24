@@ -13,7 +13,7 @@
 
             <el-row>
               <el-col> 
-                <el-form ref="form" :model="form" @keyup.enter.native="onSubmit" label-width="60px" label-position="left">
+                <el-form ref="form" status-icon :rules="rules" :model="form" @keyup.enter.native="onSubmit" label-width="60px" label-position="left">
                   <el-form-item label="账号:" prop="username">
                     <el-input v-model="form.username" name="username"></el-input>
                   </el-form-item>
@@ -39,15 +39,26 @@
 </template>
 
 <script>
+import { usernameValidate,passwordValidate } from '../../utils/validateRule'
 import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Login',
   data () {
+     
     return {
       form:{
         username:'',
         password:'',
+      },
+      rules:{
+        username: [
+          { validator: usernameValidate, trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
+        ],
+        password: [
+          { validator: passwordValidate, trigger: 'blur' }
+        ],
       },
     }
   },
@@ -56,7 +67,8 @@ export default {
       'login'
     ]),
     onSubmit(){
-      if(this.form.username && this.form.password){
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
           this.login(this.form).then(({ userToken }) => {
             localStorage.setItem('X-PLATFORM-TOKEN', userToken)
             this.$router.push({
@@ -65,9 +77,8 @@ export default {
           }).catch(err => {
             this.$alert(err)
           })
-      }else{
-        this.$alert('请输入账号与密码')
-      }
+        }
+      })
     },
     resetPassword(){
        this.$notify.error({
@@ -105,5 +116,8 @@ export default {
 }
 .link span{
    cursor:pointer;
+}
+.el-form-item.is-required .el-form-item__label::before{
+  content:'';
 }
 </style>

@@ -1,26 +1,25 @@
 
-export const validatePassword = (rule, value, callback) => {
+export const usernameValidate = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入帐号'));
+  }else{
+    callback();
+  }
+};
+export const passwordValidate = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入密码'));
   } else {
-    if (this.registerForm.reptyPassword !== '') {
-      this.$refs.registerForm.validateField('reptyPassword');
-    }
     callback();
   }
 };
 
-export const validateRepeatPassword = (rule, value, callback) => {
+export const yyzzValidate = (rule, value, callback) => {
   if (value === '') {
-    callback(new Error('请再次输入密码'));
-  } else if (value !== this.registerForm.password) {
-    callback(new Error('两次输入密码不一致!'));
+    callback(new Error('请输入营业执照号'));
+  } else if (value.length !== 15 && value.length !== 18) {
+    callback(new Error('营业执照号必须15位或18位'));
   } else {
     callback();
   }
 };
-
-export default{
-  validatePassword,
-  validateRepeatPassword,
-}

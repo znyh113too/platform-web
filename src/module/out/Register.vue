@@ -172,11 +172,33 @@
 <script>
 
 import { mapActions, mapState } from 'vuex'
-import {validatePassword,validateRepeatPassword} from "../../utils/validateRule"
+import { yyzzValidate } from '../../utils/validateRule'
 
 export default {
   name: 'Register',
   data () {
+    var validatePassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      }else if(value.length < 8){
+
+      } else {
+        if (this.registerForm.reptyPassword !== '') {
+          this.$refs.registerForm.validateField('reptyPassword');
+        }
+        callback();
+      }
+    };
+    var validateRepeatPassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.registerForm.password) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+   
     return {
       showPicture:{
         yyzz:require('../../assets/picture/unchoose.png'),
@@ -233,6 +255,7 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 8, max: 15, message: '密码长度在8到15位', trigger: 'blur' },
           { validator: validatePassword, trigger: 'blur' }
         ],
         reptyPassword: [
@@ -260,6 +283,7 @@ export default {
         ],
         businessNo: [
           { required: true,  message: '请输入营业执照号', trigger: 'blur' },
+          { validator: yyzzValidate, trigger: 'blur' }
         ],
         companyAddress: [
           { required: true,  message: '请输入企业注册地址', trigger: 'blur' },
@@ -272,9 +296,12 @@ export default {
         ],
         contactEmail: [
           { required: true,  message: '请输入联系人邮箱', trigger: 'blur' },
+          { required: true, type: 'email', message: '请输入正确的邮箱', trigger: 'blur' }
         ],
         contactPhone: [
           { required: true,  message: '请输入联系人电话', trigger: 'blur' },
+          // { required: true, type: 'number',  message: '请输入正确的电话', trigger: 'blur' },
+          // { min:11, max: 11, message: '请输入正确的电话', trigger: 'blur' },
         ],
       },
     }
@@ -288,22 +315,26 @@ export default {
     ]),
     register(){
       this.$refs['registerForm'].validate((valid) => {
-        this.registerDeveloper(this.registerForm).then(({userToken}) => {
-          this.step++;this.step1=false;this.step2=true
-          localStorage.setItem('X-PLATFORM-TOKEN', userToken)
-          this.$alert('注册成功，请补全登记信息')
-        }).catch(err => {
-          this.$alert(err)
-        })
+        if (valid) {
+          this.registerDeveloper(this.registerForm).then(({userToken}) => {
+            this.step++;this.step1=false;this.step2=true
+            localStorage.setItem('X-PLATFORM-TOKEN', userToken)
+            this.$alert('注册成功，请补全登记信息')
+          }).catch(err => {
+            this.$alert(err)
+          })
+        }
       })
     },
     infoSubmit(){
       this.$refs['infoForm'].validate((valid) => {
-        this.registerCompany(this.infoForm).then(() => {
-          this.step++;this.step2=false;this.step3=true
-        }).catch(err => {
-          this.$alert(err)
-        })
+        if (valid) {
+          this.registerCompany(this.infoForm).then(() => {
+            this.step++;this.step2=false;this.step3=true
+          }).catch(err => {
+            this.$alert(err)
+          })
+        }
       })
     },
     agree(checked){
