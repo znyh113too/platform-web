@@ -43,7 +43,7 @@
                   <label>(app_secret)</label>
                 </div>
                 <div class="right-content">
-                  <el-button v-if="!showSecret" type="text" size="medium" @click="doShowSecret">显示</el-button>
+                  <el-button v-if="!showSecret" type="text" size="medium" @click="doShowSecret()">显示</el-button>
                   <el-button v-if="showSecret" type="text" size="medium">{{applicationInfo.appSecret}}</el-button>
                   <span class="desc">应用密钥是校验布比区块链开发者应用身份的密码，属于敏感内容。切记不要讲其直接给第三方或直接存储在代码中。</span>
                 </div>
@@ -55,8 +55,26 @@
                   <label>(white_ips)</label>
                 </div>
                 <div class="right-content">
-                  <el-button type="text" size="medium">配置</el-button>
+                  <el-button v-if="!configWhiteListVisible" type="text" size="medium" @click="configWhiteList()">配置</el-button>
+                  <el-button v-if="configWhiteListVisible" type="text" size="medium">&nbsp;</el-button>
                   <span class="desc">通过应用ID和应用密钥获取access_token时，需要设置访问来源IP为白名单来增强使用的安全性。</span>
+                </div>
+              </div>
+              
+              <div style="padding-top:20px;" v-if="configWhiteListVisible" >
+                <div class="left-label">
+                  &nbsp;
+                </div>
+                <div class="white-list">
+                  <el-button type="text" style="padding-top: 0px;font-size: 15px;" @click="addWhiteIpVisible=true">添加</el-button>
+                  <el-table :data="applicationInfo.appWhiteIps" border>
+                      <el-table-column prop="ip" label="IP"></el-table-column>
+                      <el-table-column fixed="right" label="操作" width="120">
+                      <template slot-scope="scope">
+                        <el-button @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
                 </div>
               </div>
 
@@ -93,6 +111,19 @@
           </el-col>
         </el-row>
 
+        <el-dialog title="ip地址" :visible.sync="addWhiteIpVisible">
+          <el-form ref="addWhiteListForm" :model="addWhiteListForm" :rules="addWhiteListFormRules" 
+                  label-width="100px" label-position="left">
+            <el-form-item label="ip" prop="ip">
+              <el-input v-model="addWhiteListForm.ip" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="addWhiteIp(false)">取 消</el-button>
+            <el-button type="primary" @click="addWhiteIp(true)">确 定</el-button>
+          </div>
+        </el-dialog>
+
       </div>
     </el-col>
   </el-row>
@@ -107,8 +138,19 @@ export default {
   name:'ApplicationList',
   data() {
     return {
+      configWhiteListVisible:false,  
+      addWhiteIpVisible:false,
       showSecret:false,
       unchoose:require('../../assets/picture/unchoose.png'),
+      addWhiteListForm:{
+        appId:'',
+        ip:'',
+      },
+      addWhiteListFormRules:{     
+        ip: [
+          { required: true, message: '请输入添加的白名单ip', trigger: 'blur' }
+        ],
+      },
     }
   },
   computed: {
@@ -117,6 +159,9 @@ export default {
         let applicationDetailTemp = state.application.applicationDetail
         applicationDetailTemp.appStatusName=getStateName(applicationDetailTemp.appStatus)
         applicationDetailTemp.accessScopeName=getApplicationEvn(applicationDetailTemp.accessScope) || '未知环境'
+        if(applicationDetailTemp.appWhiteIps && applicationDetailTemp.appWhiteIps.length){
+          applicationDetailTemp.appWhiteIps.forEach((item,index,array)=>array[index]={ip:item});
+        }
         return applicationDetailTemp
       }
     }),
@@ -125,11 +170,42 @@ export default {
      ...mapActions([
      'applicationDetail',
      'applicationOpenServer',
+     'applicationAddWhiteIp',
+     'applicationDeleteWhiteIp',
     ]),
     getParams() {
       let params = this.$route.params
       console.log(params)
       this.applicationDetail({appId:params.appId,appApplyId:params.appApplyId})
+    },
+    configWhiteList(){
+      this.configWhiteListVisible=true
+
+    },
+    addWhiteIp(submit){
+      this.addWhiteListForm.appId=this.applicationInfo.appId
+      if(submit){
+        this.$refs['addWhiteListForm'].validate((valid) => {
+          if (valid) {
+            this.addWhiteIpVisible=false
+            this.applicationAddWhiteIp(this.addWhiteListForm).then(()=>{
+              this.getParams();
+            }).catch((err) => {
+              this.$alert(err)
+            })
+          }
+        })
+      }else{
+        this.addWhiteIpVisible=false
+        this.addWhiteListForm.ip='';
+      }
+    },
+    doDelete(item){
+      this.applicationDeleteWhiteIp({appId:this.applicationInfo.appId,ip:item.ip}).then(()=>{
+        this.getParams();
+      }).catch((err) => {
+        this.$alert(err)
+      })
     },
     choosePicture(item){
       return require('../../assets/picture/'+item.packName+'.png')
@@ -186,6 +262,10 @@ export default {
 <style scoped>
 .content{
   padding: 50px;
+}
+.white-list{
+  width: 500px;
+  display: inline-block;
 }
 .line-content{
   padding-top: 20px;

@@ -60,7 +60,7 @@
           <el-row v-if="step2">
             <el-col :offset="5" :span="14">
               <el-form ref="infoForm" :model="infoForm" :rules="infoRules" 
-                  label-width="150px" label-position="left" class="register-form">
+                  label-width="160px" label-position="left" class="register-form">
                   
                   <div class="info-form-content">
                     <div style="padding-bottom:30px;">
@@ -71,8 +71,10 @@
                       <span class="text-tip">必须与企业营业执照上的企业名称完全一致，信息审核成功后，企业名称不可修改。</span>
                     </el-form-item>
                     <el-form-item label="是否三证合一:" prop="certificates">
-                      <el-radio v-model="infoForm.certificates" :label="1">是</el-radio>
-                      <el-radio v-model="infoForm.certificates" :label="0">否</el-radio>
+                       <el-radio-group v-model="infoForm.certificates">
+                        <el-radio label="是"></el-radio>
+                        <el-radio label="否"></el-radio>
+                      </el-radio-group>
                     </el-form-item>
                     <el-form-item label="营业执照号:" prop="businessNo">
                       <el-input v-model="infoForm.businessNo" name="businessNo"></el-input>
@@ -84,9 +86,22 @@
                       <img :src="showPicture.yyzz" class="image">
                       <input style="display:none;" type="file" accept="image/*" @change="fileChanged('yyzzFile','yyzz','businessPath')" ref="yyzzFile" multiple="multiple">
                     </el-form-item>
+                    <el-form-item label="组织机构图片:" prop="organizationPath">
+                      <el-button @click="upload('organizationPathFile')">上传</el-button>
+                      <span class="text-tip">请上传原件照片或扫描件，或者加盖企业公章的复印件的扫面件，支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
+                      <img :src="showPicture.organization" class="image">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('organizationPathFile','organization','organizationPath')" ref="organizationPathFile" multiple="multiple">
+                    </el-form-item>
+                    <el-form-item label="税务登记图片:" prop="taxPath">
+                      <el-button @click="upload('taxPathFile')">上传</el-button>
+                      <span class="text-tip">请上传原件照片或扫描件，或者加盖企业公章的复印件的扫面件，支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
+                      <img :src="showPicture.tax" class="image">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('taxPathFile','tax','taxPathFile')" ref="taxPathFile" multiple="multiple">
+                    </el-form-item>
                     <el-form-item label="企业所在省市:" prop="companyCity">
                       <div class="block">
                         <el-cascader
+                          :filterable="true"
                           expand-trigger="hover"
                           :options="citys"
                           v-model="selectedCitys"
@@ -172,7 +187,8 @@
 <script>
 
 import { mapActions, mapState } from 'vuex'
-import { yyzzValidate } from '../../utils/validateRule'
+import { yyzzValidate,isEmail } from '../../utils/validateRule'
+import { citysJsonArr } from '../../core/citys'
 
 export default {
   name: 'Register',
@@ -202,37 +218,18 @@ export default {
     return {
       showPicture:{
         yyzz:require('../../assets/picture/unchoose.png'),
+        organization:require('../../assets/picture/unchoose.png'),
+        tax:require('../../assets/picture/unchoose.png'),
         idDemo:require('../../assets/picture/unchoose.png'),
         id:require('../../assets/picture/unchoose.png'),
         idBackDemo:require('../../assets/picture/unchoose.png'),
         idBack:require('../../assets/picture/unchoose.png'),
       },
       selectedCitys:[],
-      citys:[{
-        value: '北京',
-        label: '北京',
-        children: [{
-          value: ',海淀',
-          label: '海淀',
-          },{
-          value: ',朝阳',
-          label: '朝阳',
-        }]
-      },{
-        value: '上海',
-        label: '上海',
-        children: [{
-          value: ',静安',
-          label: '静安',
-          },{
-          value: ',浦东',
-          label: '浦东',
-        }]
-      }],
-
+      citys:citysJsonArr,
       step:0,
-      step1: false,
-      step2: true,
+      step1: true,
+      step2: false,
       step3: false,
       sendVerifyCode:'发送验证码',
       sendVerifyCodeDisabled:false,
@@ -265,9 +262,12 @@ export default {
       },
       infoForm:{
         companyName:'',
-        certificates:1,
+        certificates:'',
         businessNo:'',
         businessPath:'',
+        organization:'',
+        tax:'',
+        companyCtiyCode:'',
         companyCity:'',
         companyAddress:'',
         contactName:'',
@@ -281,9 +281,18 @@ export default {
         companyName: [
           { required: true,  message: '请输入企业名称', trigger: 'blur' },
         ],
+        certificates: [
+          { required: true, message: '请选择是否三证合一', trigger: 'change' },
+        ],
         businessNo: [
           { required: true,  message: '请输入营业执照号', trigger: 'blur' },
           { validator: yyzzValidate, trigger: 'blur' }
+        ],
+        businessPath: [
+          { required: true,  message: '请上传营业执照图片', trigger: 'change' },
+        ],
+        companyCity: [
+          { required: true,  message: '请选择企业所在省市', trigger: 'change' },
         ],
         companyAddress: [
           { required: true,  message: '请输入企业注册地址', trigger: 'blur' },
@@ -293,6 +302,12 @@ export default {
         ],
         contactCardId: [
           { required: true,  message: '请输入联系人身份证号', trigger: 'blur' },
+        ],
+        contactCardFront: [
+          { required: true,  message: '请上传联系人身份证正面照', trigger: 'blur' },
+        ],
+        contactCardBack: [
+          { required: true,  message: '请上传联系人身份证背面照', trigger: 'blur' },
         ],
         contactEmail: [
           { required: true,  message: '请输入联系人邮箱', trigger: 'blur' },
@@ -345,8 +360,7 @@ export default {
       }
     },
     doSendVerifyCode(){
-      // todo 指定表单域验证
-      if(this.registerForm.email){
+      if(isEmail(this.registerForm.email)){
         this.sendEmailVerifyCode({'email':this.registerForm.email}).then(()=>{
           this.doSendVerifyCodeAnimation()
           this.$alert('发送成功，请查收!')
@@ -380,12 +394,12 @@ export default {
       })
     },
     cityHandleChange(value){
-      let str=''
-      for(let key in value){
-        str+=value[key]
-      }
-      console.log(str)
-      this.infoForm.companyCity = str
+      let cityCode=value[2].split("-")[0]
+      let name='';
+      value.forEach(item=>name+=item.split("-")[1])
+      console.log(name)
+      this.infoForm.companyCtiyCode = cityCode
+      this.infoForm.companyCity = name
     },
     upload(fileRef){
       this.$refs[fileRef].click()
@@ -400,6 +414,10 @@ export default {
           this.$set(this.showPicture, attr, e.target.result)
         }
         reader.readAsDataURL(item)
+        
+        this.$refs['infoForm'].validate(valid=>{
+          //ignore
+        })
       }).catch(err => {
         this.$alert(err)
       })
@@ -411,6 +429,9 @@ export default {
 <style scoped>
 .step{
   padding: 50px;
+}
+.el-cascader{
+  width: 300px;
 }
 .right-content{
   float:right;

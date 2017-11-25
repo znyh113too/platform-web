@@ -54,10 +54,12 @@ export default {
     ...mapState({
       applications: state => {
         let applicationListTemp = state.application.applicationList
-        applicationListTemp.forEach(item=>{
-          item.appStatusName=getStateName(item.appStatus)
-          item.accessScopeName=getApplicationEvn(item.accessScope)
-        })
+        if(applicationListTemp.length){
+            applicationListTemp.forEach(item=>{
+            item.appStatusName=getStateName(item.appStatus)
+            item.accessScopeName=getApplicationEvn(item.accessScope)
+          })
+        }
         return applicationListTemp
       }
     }),

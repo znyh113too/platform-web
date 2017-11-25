@@ -16,11 +16,7 @@ const methodDelete = 'delete';
 const callService = async (url, opts, method, headers) => {
   if (!opts) opts = {};
 
-  if(url.indexOf("?") !== -1){
-    url=url+'&userToken='+localStorage.getItem('X-PLATFORM-TOKEN')
-  }else{
-    url=url+'?userToken='+localStorage.getItem('X-PLATFORM-TOKEN')
-  }
+  url=addToken(url)
 
   let response = await fetch(url, getFetchHeader(opts, method, headers))
 
@@ -39,6 +35,17 @@ const callService = async (url, opts, method, headers) => {
   return data
 
 };
+
+function addToken(url){
+  if(localStorage.getItem('X-PLATFORM-TOKEN')){
+    if(url.indexOf("?") !== -1){
+      url=url+'&userToken='+localStorage.getItem('X-PLATFORM-TOKEN')
+    }else{
+      url=url+'?userToken='+localStorage.getItem('X-PLATFORM-TOKEN')
+    }
+  }
+  return url
+}
 
 function getFetchHeader(opts, method, headers) {
   if (method === methodGet) {
@@ -67,7 +74,7 @@ function converGetParam(url, param) {
       url += key + '=' + param[key] + "&"
     }
   }
-  return url
+  return url.substring(0,url.length-1)
 }
 
 export const post = async (url, args) => {

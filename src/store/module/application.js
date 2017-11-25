@@ -3,11 +3,7 @@ import http from '../../utils/http'
 import * as api from '../../core/api'
 
 const getState = () => ({
-  applicationList:[{
-    appId:'',
-    appApplyId:'',
-    appName:'',
-  }],
+  applicationList:[],
   applicationDetail:{
 
   }
@@ -69,6 +65,14 @@ export const actions = {
 
   async applicationOpenServer({ commit, state }, data) {
     await http.post(api.APPLICATION_OPEN_SERVER, data)
+  },
+
+  async applicationAddWhiteIp({ commit, state }, data) {
+    await http.post(api.APPLICATION_ADD_WHITE_IP, data)
+  },
+
+  async applicationDeleteWhiteIp({ commit, state }, data) {
+    await http.post(api.APPLICATION_DELETE_WHITE_IP, data)
   },
 
 }

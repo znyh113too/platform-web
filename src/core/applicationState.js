@@ -13,7 +13,7 @@ export function getStateName(state) {
 
 // env
 export const ENV_BOX = '沙箱环境'
-export const ENV_NORMAL = '使用中'
+export const ENV_NORMAL = '正式环境'
 
 export const applicationEnvState = new Map([[0, ENV_BOX], [1, ENV_NORMAL]])
 

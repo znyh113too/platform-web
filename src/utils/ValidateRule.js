@@ -1,4 +1,10 @@
+// reg validate
+export const isEmail = str => { 
+  var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/; 
+  return reg.test(str); 
+} 
 
+// form validate
 export const usernameValidate = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入帐号'));
@@ -13,6 +19,7 @@ export const passwordValidate = (rule, value, callback) => {
     callback();
   }
 };
+
 
 export const yyzzValidate = (rule, value, callback) => {
   if (value === '') {
