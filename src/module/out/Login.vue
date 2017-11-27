@@ -13,7 +13,7 @@
 
             <el-row>
               <el-col> 
-                <el-form ref="form" status-icon :rules="rules" :model="form" @keyup.enter.native="onSubmit" label-width="60px" label-position="left">
+                <el-form ref="form" status-icon :rules="rules" :model="form" label-width="60px" label-position="left">
                   <el-form-item label="账号:" prop="username">
                     <el-input v-model="form.username" name="username"></el-input>
                   </el-form-item>

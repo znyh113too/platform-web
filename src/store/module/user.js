@@ -1,3 +1,4 @@
+import { getCompanyAuthenticationStateName } from '../../core/applicationState'
 import * as types from '../mutation-types'
 import http from '../../utils/http'
 import * as api from '../../core/api'
@@ -33,6 +34,7 @@ export const actions = {
 export const mutations = {
   [types.USER_FETCH](state, user) {
     Object.assign(state.user, user)
+    state.user.authorizedStatusName=getCompanyAuthenticationStateName(user.authorizedStatus)
   }
 }
 

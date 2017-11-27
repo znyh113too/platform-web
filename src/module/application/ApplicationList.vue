@@ -12,7 +12,7 @@
             <el-button class="mock-button" @click="searchEffect()">已生效</el-button>
           </el-col>
           <el-col :offset="17" :span="2">
-            <el-button @click="routerAddApplication">添加应用</el-button>
+            <el-button @click="routerAddApplication()">添加应用</el-button>
           </el-col>
         </el-row>
 
@@ -52,6 +52,7 @@ export default {
   },
   computed: {
     ...mapState({
+      user: state => state.user.user,
       applications: state => {
         let applicationListTemp = state.application.applicationList
         if(applicationListTemp.length){
@@ -79,9 +80,13 @@ export default {
       this.applicationListEffect()
     },
     routerAddApplication(){
-      this.$router.push({
-        path: "/addApplication"
-      })
+      if(this.user.authorizedStatus==='0'){
+        this.$router.push({
+          path: "/addApplication"
+        })
+      }else{
+        this.$alert("只有认证通过才可以创建应用")
+      }
     },
     toDetail(item){
       console.log(item)

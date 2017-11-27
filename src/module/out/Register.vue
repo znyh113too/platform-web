@@ -72,8 +72,8 @@
                     </el-form-item>
                     <el-form-item label="是否三证合一:" prop="certificates">
                        <el-radio-group v-model="infoForm.certificates">
-                        <el-radio label="是"></el-radio>
-                        <el-radio label="否"></el-radio>
+                        <el-radio label="1">是</el-radio>
+                        <el-radio label="0">否</el-radio>
                       </el-radio-group>
                     </el-form-item>
                     <el-form-item label="营业执照号:" prop="businessNo">
@@ -90,13 +90,13 @@
                       <el-button @click="upload('organizationPathFile')">上传</el-button>
                       <span class="text-tip">请上传原件照片或扫描件，或者加盖企业公章的复印件的扫面件，支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
                       <img :src="showPicture.organization" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('organizationPathFile','organization','organizationPath')" ref="organizationPathFile" multiple="multiple">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('organizationPathFile','organization','organization')" ref="organizationPathFile" multiple="multiple">
                     </el-form-item>
                     <el-form-item label="税务登记图片:" prop="taxPath">
                       <el-button @click="upload('taxPathFile')">上传</el-button>
                       <span class="text-tip">请上传原件照片或扫描件，或者加盖企业公章的复印件的扫面件，支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
                       <img :src="showPicture.tax" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('taxPathFile','tax','taxPathFile')" ref="taxPathFile" multiple="multiple">
+                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('taxPathFile','tax','tax')" ref="taxPathFile" multiple="multiple">
                     </el-form-item>
                     <el-form-item label="企业所在省市:" prop="companyCity">
                       <div class="block">
@@ -228,7 +228,7 @@ export default {
       selectedCitys:[],
       citys:citysJsonArr,
       step:0,
-      step1: true,
+      step1: false,
       step2: false,
       step3: false,
       sendVerifyCode:'发送验证码',
@@ -267,7 +267,7 @@ export default {
         businessPath:'',
         organization:'',
         tax:'',
-        companyCtiyCode:'',
+        companyCityCode:'',
         companyCity:'',
         companyAddress:'',
         contactName:'',
@@ -321,12 +321,31 @@ export default {
       },
     }
   },
+  computed: {
+    ...mapState({
+      user: state => state.user.user,
+    }),
+  },
+  created(){
+    if(localStorage.getItem('X-PLATFORM-TOKEN')){
+      this.getUser(localStorage.getItem('X-PLATFORM-TOKEN')).then(()=>{
+        if(this.user.authorizedStatus==='1' || this.user.authorizedStatus==='3'){
+          this.step++
+          this.step1=false
+          this.step2=true
+        }
+      })
+    }else{
+      this.step1=true
+    }
+  },
   methods:{
     ...mapActions([
       'sendEmailVerifyCode',
       'registerDeveloper',
       'uploadPicture',
       'registerCompany',
+      'getUser',
     ]),
     register(){
       this.$refs['registerForm'].validate((valid) => {
@@ -398,7 +417,7 @@ export default {
       let name='';
       value.forEach(item=>name+=item.split("-")[1])
       console.log(name)
-      this.infoForm.companyCtiyCode = cityCode
+      this.infoForm.companyCityCode = cityCode
       this.infoForm.companyCity = name
     },
     upload(fileRef){

@@ -20,8 +20,8 @@
                 <el-input v-model="form.name"  name="name"></el-input>
                 <span class="text-tip">请输入您的应用名称</span>
               </el-form-item>
-              <el-form-item label="主营行业:" prop="industry">
-                <el-select v-model="form.industry" placeholder="请选择">
+              <el-form-item label="主营行业:" prop="tradeCode">
+                <el-select v-model="form.tradeCode" placeholder="请选择">
                   <el-option v-for="item in industry" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
@@ -78,7 +78,7 @@ export default {
         icon:'',
         type:1,
         name:'',
-        industry:'',
+        tradeCode:'',
         domain:'',
         description:'',
       },
@@ -89,7 +89,7 @@ export default {
         name: [
           { required: true,  message: '请输入应用名称', trigger: 'blur' },
         ],
-        industry: [
+        tradeCode: [
           { required: true,  message: '请选择行业', trigger: 'blur' },
         ],
         domain: [

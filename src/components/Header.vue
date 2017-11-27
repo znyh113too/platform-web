@@ -19,11 +19,11 @@
         <div v-if="login">
           <!-- <el-col :offset="11" :span="2">
             <span class="top-menu">消息</span>
-          </el-col>
-          <el-col :span="2">
-            <span class="top-menu">工单</span>
           </el-col> -->
-          <el-col :offset="13" :span="4">
+          <el-col :offset="10" :span="3">
+            <span class="top-menu">认证状态:{{user.authorizedStatusName}}</span>
+          </el-col> 
+          <el-col :span="4">
             <span class="top-menu">欢迎您:{{user.accountName}}</span>
           </el-col>
           <el-col :span="2">
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -45,7 +46,6 @@ export default {
   props: ['login','user'],
   data () {
     return {
-      
     }
   },
   methods: {
@@ -92,6 +92,7 @@ export default {
   font-size: 24px;
   color: #409EFF;
   height: 100%;
+  cursor: pointer;
 }
 .top-menu{
   line-height: 40px;

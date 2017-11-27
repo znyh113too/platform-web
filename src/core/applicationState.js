@@ -20,3 +20,16 @@ export const applicationEnvState = new Map([[0, ENV_BOX], [1, ENV_NORMAL]])
 export function getApplicationEvn(state) {
   return applicationEnvState.get(state)
 }
+
+// company status 0 已认证 1 未认证 2 认证中 3 认证失败
+export const COMPANY_STATUS_0 = '已认证'
+export const COMPANY_STATUS_1 = '未认证'
+export const COMPANY_STATUS_2 = '认证中'
+export const COMPANY_STATUS_3 = '认证失败'
+
+export const companyAuthenticationState = new Map([["0", COMPANY_STATUS_0], ["1", COMPANY_STATUS_1],
+ ["2", COMPANY_STATUS_2], ["3", COMPANY_STATUS_3]])
+
+export function getCompanyAuthenticationStateName(state) {
+  return companyAuthenticationState.get(state)
+}

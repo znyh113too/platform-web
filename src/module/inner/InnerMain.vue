@@ -26,12 +26,11 @@ import Footer from "../../components/Footer"
 export default {
   data() {
     return {
-
     }
   },
   computed: {
     ...mapState({
-      user: state => state.user.user,
+      user: state => state.user.user
     }),
   },
   methods:{

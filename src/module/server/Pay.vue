@@ -51,14 +51,8 @@
             IP白名单
           </el-col>
           <el-col :span="10">
-            <el-button type="text" style="padding-top: 0px;font-size: 16px;">添加</el-button>
-             <el-table :data="whiteList" border>
+             <el-table :data="configPay.whiteIps" border>
               <el-table-column prop="ip" label="IP"></el-table-column>
-              <el-table-column fixed="right" label="操作" width="120">
-                <template slot-scope="scope">
-                  <el-button @click="doDelete(scope.row)" type="text" size="small">删除</el-button>
-                </template>
-              </el-table-column>
             </el-table>
           </el-col>
         </el-row>
@@ -86,22 +80,17 @@ export default {
       infoShow:true,
       configShow:false,
       guideShow:false,
-      whiteList:[
-        // {
-        //   ip:'192.168.1.9',
-        // },
-        // {
-        //   ip:'192.168.1.19',
-        // },
-        // {
-        //   ip:'192.168.1.22',
-        // },
-      ]
     }
   },
   computed: {
     ...mapState({
-      configPay: state => state.pay.configPay
+      configPay: state => {
+        let configPayTemp=state.pay.configPay
+         if(configPayTemp.whiteIps && configPayTemp.whiteIps.length){
+          configPayTemp.whiteIps.forEach((item,index,array)=>array[index]={ip:item});
+        }
+        return configPayTemp
+      }
     }),
   },
   mounted() {
