@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { usernameValidate,passwordValidate } from '@/utils/validateRule'
+import { usernameValidate,passwordValidate } from '../../utils/validateRule'
 import { mapActions, mapState } from 'vuex'
 
 export default {
