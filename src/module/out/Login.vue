@@ -4,7 +4,7 @@
 
       <el-row class="out-content inner-content">
         <el-col :offset="9" :span="6">
-            
+
             <el-row type="flex" justify="center" class="title">
               <el-col style="width: 44px;">
                 <span>登陆</span>
@@ -12,7 +12,7 @@
             </el-row>
 
             <el-row>
-              <el-col> 
+              <el-col>
                 <el-form ref="form" status-icon :rules="rules" :model="form" label-width="60px" label-position="left">
                   <el-form-item label="账号:" prop="username">
                     <el-input v-model="form.username" name="username"></el-input>
@@ -30,7 +30,7 @@
                 </el-form>
               </el-col>
             </el-row>
-           
+
         </el-col>
       </el-row>
 
@@ -39,13 +39,13 @@
 </template>
 
 <script>
-import { usernameValidate,passwordValidate } from '../../utils/validateRule'
+import { usernameValidate,passwordValidate } from '@/utils/validateRule'
 import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Login',
   data () {
-     
+
     return {
       form:{
         username:'',
@@ -112,7 +112,7 @@ export default {
 }
 .link{
   padding-top: 30px;
-  font-size: 15px; 
+  font-size: 15px;
 }
 .link span{
    cursor:pointer;
