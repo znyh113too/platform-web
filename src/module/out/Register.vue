@@ -4,7 +4,7 @@
 
       <el-row class="out-content">
         <el-col>
-          
+
           <el-row class="step">
             <el-col>
               <el-steps :active="step" finish-status="success" :align-center="true">
@@ -19,7 +19,7 @@
             <el-col :offset="5" :span="14">
               <el-row>
                 <el-col :span="16">
-                  <el-form ref="registerForm" :model="registerForm" :rules="registerRules" 
+                  <el-form ref="registerForm" :model="registerForm" :rules="registerRules"
                       @keyup.enter.native="register" label-width="100px" label-position="left" class="register-form">
                     <el-form-item label="注册邮箱:" prop="email">
                       <el-input v-model="registerForm.email" name="email"></el-input>
@@ -38,7 +38,7 @@
                       <el-input v-model="registerForm.reptyPassword" type="password" name="reptyPassword"></el-input>
                       <span class="text-tip">请再次输入密码</span>
                     </el-form-item>
-                    
+
                     <el-form-item>
                       <el-checkbox v-model="registerForm.checked" @change="agree">我已阅读并同意<span style="color:#33CCFF" @click="serverProtocol">《服务协议》</span></el-checkbox>
                     </el-form-item>
@@ -53,15 +53,15 @@
                     </div>
                   </el-col>
               </el-row>
-             
+
             </el-col>
           </el-row>
 
           <el-row v-if="step2">
             <el-col :offset="5" :span="14">
-              <el-form ref="infoForm" :model="infoForm" :rules="infoRules" 
+              <el-form ref="infoForm" :model="infoForm" :rules="infoRules"
                   label-width="160px" label-position="left" class="register-form">
-                  
+
                   <div class="info-form-content">
                     <div style="padding-bottom:30px;">
                       企业基本信息<hr/>
@@ -169,7 +169,7 @@
               </el-form>
             </el-col>
           </el-row>
-       
+
           <el-row v-if="step3" type="flex" justify="center" >
             <el-col style="width:640px;">
               <h1>恭喜您，完成布比开发者平台注册信息登记！</h1>
@@ -179,7 +179,7 @@
 
         </el-col>
       </el-row>
-  
+
     </el-col>
   </el-row>
 </template>
@@ -187,7 +187,7 @@
 <script>
 
 import { mapActions, mapState } from 'vuex'
-import { yyzzValidate,isEmail } from '../../utils/validateRule'
+import { yyzzValidate,isEmail } from '../../utils/ValidateRule'
 import { citysJsonArr } from '../../core/citys'
 
 export default {
@@ -214,7 +214,7 @@ export default {
         callback();
       }
     };
-   
+
     return {
       showPicture:{
         yyzz:require('../../assets/picture/unchoose.png'),
@@ -242,7 +242,7 @@ export default {
         reptyPassword:'',
         checked:false,
       },
-      registerRules:{     
+      registerRules:{
         email: [
           { required: true,  message: '请输入注册邮箱', trigger: 'blur' },
           { required: true, type: 'email', message: '请输入正确的注册邮箱', trigger: 'blur' }
@@ -389,7 +389,7 @@ export default {
         }).catch(err => {
           this.$alert(err)
         })
-       
+
       }
     },
     doSendVerifyCodeAnimation(){
@@ -397,7 +397,7 @@ export default {
         this.sendVerifyCode='发送验证码'
         this.sendVerifyCodeDisabled=false
         this.sendVerifyCodeWait=60
-      } else { 
+      } else {
         this.sendVerifyCodeDisabled=true;
         this.sendVerifyCode="重新发送(" + this.sendVerifyCodeWait + ")";
         this.sendVerifyCodeWait--;
@@ -430,13 +430,13 @@ export default {
       const item = this.$refs[fileRef].files[0]
       this.uploadPicture(item).then(path=>{
         this.infoForm[formAttr]=path
-        
+
         const reader = new FileReader()
         reader.onload = (e) => {
           this.$set(this.showPicture, attr, e.target.result)
         }
         reader.readAsDataURL(item)
-        
+
         this.$refs['infoForm'].validate(valid=>{
           //ignore
         })
