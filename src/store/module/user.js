@@ -35,6 +35,7 @@ export const mutations = {
   [types.USER_FETCH](state, user) {
     Object.assign(state.user, user)
     state.user.authorizedStatusName=getCompanyAuthenticationStateName(user.authorizedStatus)
+    state.user.canRouterAuthentication=user.authorizedStatus==='1'||user.authorizedStatus==='3'
   }
 }
 

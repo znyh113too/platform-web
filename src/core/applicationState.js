@@ -23,9 +23,9 @@ export function getApplicationEvn(state) {
 
 // company status 0 已认证 1 未认证 2 认证中 3 认证失败
 export const COMPANY_STATUS_0 = '已认证'
-export const COMPANY_STATUS_1 = '未认证'
+export const COMPANY_STATUS_1 = '未认证(去认证)'
 export const COMPANY_STATUS_2 = '认证中'
-export const COMPANY_STATUS_3 = '认证失败'
+export const COMPANY_STATUS_3 = '认证失败(去认证)'
 
 export const companyAuthenticationState = new Map([["0", COMPANY_STATUS_0], ["1", COMPANY_STATUS_1],
  ["2", COMPANY_STATUS_2], ["3", COMPANY_STATUS_3]])

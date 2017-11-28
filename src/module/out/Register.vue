@@ -333,6 +333,8 @@ export default {
           this.step++
           this.step1=false
           this.step2=true
+        }else{
+          this.step1=true
         }
       })
     }else{
@@ -364,6 +366,7 @@ export default {
       this.$refs['infoForm'].validate((valid) => {
         if (valid) {
           this.registerCompany(this.infoForm).then(() => {
+            window.scrollTo(0, 0)
             this.step++;this.step2=false;this.step3=true
           }).catch(err => {
             this.$alert(err)

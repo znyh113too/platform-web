@@ -80,6 +80,7 @@ router.beforeEach((to, from, next) => {
       return next({ path: '/login' });
     }
   }
+  window.scrollTo(0, 0)
   return next()
 })
 

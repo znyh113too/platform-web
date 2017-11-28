@@ -20,8 +20,8 @@
           <!-- <el-col :offset="11" :span="2">
             <span class="top-menu">消息</span>
           </el-col> -->
-          <el-col :offset="10" :span="3">
-            <span class="top-menu">认证状态:{{user.authorizedStatusName}}</span>
+          <el-col :offset="8" :span="5">
+            <span class="top-menu" @click="toAuth()">认证状态:<span class="auth">{{user.authorizedStatusName}}</span></span>
           </el-col> 
           <el-col :span="4">
             <span class="top-menu">欢迎您:{{user.accountName}}</span>
@@ -69,10 +69,17 @@ export default {
         path: "/main"
       })
     },
+    toAuth(){
+      if(this.user.canRouterAuthentication){
+        this.$router.push({
+          path: "/register"
+        })
+      }
+    },
     toRegister() {
      this.$router.push({
         path: "/register"
-      })
+     })
     }
   }
 }
@@ -96,5 +103,9 @@ export default {
 }
 .top-menu{
   line-height: 40px;
+}
+.auth{
+  cursor: pointer;
+  color: #0066FF;
 }
 </style>
