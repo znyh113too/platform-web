@@ -1,5 +1,6 @@
 
 export const USER_FETCH = 'USER_FETCH'
+export const USER_RESET = 'USER_RESET'
 
 export const APPLICATION_LIST = 'APPLICATION_LIST'
 export const APPLICATION_DETAIL = 'APPLICATION_DETAIL'

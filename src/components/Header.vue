@@ -7,7 +7,7 @@
           <span class="title" @click="toMain">布比开发者平台</span>
         </el-col>
 
-        <div v-if="!login">
+        <div v-if="!isLogin">
           <el-col :offset="15" :span="2">
             <el-button type="primary" @click="toLogin">登录</el-button>
           </el-col>
@@ -16,7 +16,7 @@
           </el-col>
         </div>
 
-        <div v-if="login">
+        <div v-if="isLogin">
           <!-- <el-col :offset="11" :span="2">
             <span class="top-menu">消息</span>
           </el-col> -->
@@ -43,14 +43,23 @@ import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Header',
-  props: ['login','user'],
+  props: ['user'],
   data () {
     return {
     }
   },
+  computed:{
+    isLogin(){
+      return this.user.accountName!==''
+    },
+  },
+  mounted(){
+    console.log(this.user)
+  },
   methods: {
     ...mapActions([
       'logout',
+      'getUser',
     ]),
     toLogin() {
       this.$router.push({
@@ -60,7 +69,7 @@ export default {
     toLogout(){
       this.logout().then(()=>{
         this.$router.push({
-          path: "/"
+          path: "/login",
         })
       })
     },

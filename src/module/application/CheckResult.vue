@@ -14,6 +14,7 @@
          <el-row type="flex" justify="center" >
             <el-col class="result-desc">
               <span class="success">我们尽快审核您的登记信息，预计时间1-2个工作日，审核结果将发至您提供的邮箱</span>
+              <el-button type="primary" style="margin: 20px;" @click="toMain()">返回</el-button>
             </el-col>
           </el-row>
 
@@ -37,6 +38,11 @@ export default {
     routerAddApplication(){
       this.$router.push({
         path: "/addApplication"
+      })
+    },
+    toMain(){
+      this.$router.push({
+        path: "/main"
       })
     },
   }

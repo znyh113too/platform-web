@@ -84,19 +84,19 @@
                       <el-button @click="upload('yyzzFile')">上传</el-button>
                       <span class="text-tip">请上传原件照片或扫描件，或者加盖企业公章的复印件的扫面件，支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
                       <img :src="showPicture.yyzz" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('yyzzFile','yyzz','businessPath')" ref="yyzzFile" multiple="multiple">
+                      <input style="display:none;" type="file" accept="image/png,image/jpeg,image/jpg" @change="fileChanged('yyzzFile','yyzz','businessPath')" ref="yyzzFile" multiple="multiple">
                     </el-form-item>
                     <el-form-item label="组织机构图片:" prop="organizationPath">
                       <el-button @click="upload('organizationPathFile')">上传</el-button>
                       <span class="text-tip">请上传原件照片或扫描件，或者加盖企业公章的复印件的扫面件，支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
                       <img :src="showPicture.organization" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('organizationPathFile','organization','organization')" ref="organizationPathFile" multiple="multiple">
+                      <input style="display:none;" type="file" accept="image/png,image/jpeg,image/jpg" @change="fileChanged('organizationPathFile','organization','organization')" ref="organizationPathFile" multiple="multiple">
                     </el-form-item>
                     <el-form-item label="税务登记图片:" prop="taxPath">
                       <el-button @click="upload('taxPathFile')">上传</el-button>
                       <span class="text-tip">请上传原件照片或扫描件，或者加盖企业公章的复印件的扫面件，支持.jpg、.jpeg、.png格式，大小不能超过2M</span>
                       <img :src="showPicture.tax" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('taxPathFile','tax','tax')" ref="taxPathFile" multiple="multiple">
+                      <input style="display:none;" type="file" accept="image/png,image/jpeg,image/jpg" @change="fileChanged('taxPathFile','tax','tax')" ref="taxPathFile" multiple="multiple">
                     </el-form-item>
                     <el-form-item label="企业所在省市:" prop="companyCity">
                       <div class="block">
@@ -138,7 +138,7 @@
                         </div>
                       </div>
                       <img :src="showPicture.id" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('idFile','id','contactCardFront')" ref="idFile" multiple="multiple">
+                      <input style="display:none;" type="file" accept="image/png,image/jpeg,image/jpg" @change="fileChanged('idFile','id','contactCardFront')" ref="idFile" multiple="multiple">
                     </el-form-item>
                     <el-form-item label="联系人身份证背面照:" prop="contactCardBack">
                       <div>
@@ -152,7 +152,7 @@
                         </div>
                       </div>
                       <img :src="showPicture.idBack" class="image">
-                      <input style="display:none;" type="file" accept="image/*" @change="fileChanged('idBackFile','idBack','contactCardBack')" ref="idBackFile" multiple="multiple">
+                      <input style="display:none;" type="file" accept="image/png,image/jpeg,image/jpg" @change="fileChanged('idBackFile','idBack','contactCardBack')" ref="idBackFile" multiple="multiple">
                     </el-form-item>
                     <el-form-item label="联系人电子邮箱:" prop="contactEmail">
                       <el-input v-model="infoForm.contactEmail" name="contactEmail"></el-input>
@@ -174,6 +174,7 @@
             <el-col style="width:640px;">
               <h1>恭喜您，完成布比开发者平台注册信息登记！</h1>
               <span class="success">我们尽快审核您的登记信息，预计时间1-2个工作日，审核结果将发至您提供的邮箱</span>
+              <el-button type="primary" style="margin: 15px;" @click="toLogin()">返回</el-button>
             </el-col>
           </el-row>
 
@@ -187,7 +188,7 @@
 <script>
 
 import { mapActions, mapState } from 'vuex'
-import { yyzzValidate,isEmail } from '../../utils/ValidateRule'
+import { yyzzValidate,isEmail,IDCardValidate,phoneValidate } from '../../utils/ValidateRule'
 import { citysJsonArr } from '../../core/citys'
 
 export default {
@@ -296,12 +297,15 @@ export default {
         ],
         companyAddress: [
           { required: true,  message: '请输入企业注册地址', trigger: 'blur' },
+          { max: 40, message: '企业注册地址不能超过40字符', trigger: 'blur' }
         ],
         contactName: [
           { required: true,  message: '请输入联系人姓名', trigger: 'blur' },
+          { max: 20, message: '联系人姓名不能超过20字符', trigger: 'blur' }
         ],
         contactCardId: [
           { required: true,  message: '请输入联系人身份证号', trigger: 'blur' },
+          { validator: IDCardValidate, trigger: 'blur' }
         ],
         contactCardFront: [
           { required: true,  message: '请上传联系人身份证正面照', trigger: 'blur' },
@@ -311,12 +315,12 @@ export default {
         ],
         contactEmail: [
           { required: true,  message: '请输入联系人邮箱', trigger: 'blur' },
+          { max: 100, message: '邮箱不能超过100字符', trigger: 'blur' },
           { required: true, type: 'email', message: '请输入正确的邮箱', trigger: 'blur' }
         ],
         contactPhone: [
           { required: true,  message: '请输入联系人电话', trigger: 'blur' },
-          // { required: true, type: 'number',  message: '请输入正确的电话', trigger: 'blur' },
-          // { min:11, max: 11, message: '请输入正确的电话', trigger: 'blur' },
+          { validator: phoneValidate, trigger: 'blur' },
         ],
       },
     }

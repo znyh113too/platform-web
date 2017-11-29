@@ -22,7 +22,7 @@ let router = new Router({
       component: OutMain,
       children: [
         {
-          path: '/',
+          path: '',
           name: 'OutHome',
           component: OutHome,
         },
@@ -43,7 +43,7 @@ let router = new Router({
       component: InnerMain,
       children: [
         {
-          path: '/',
+          path: '',
           name: 'ApplicationList',
           component: ApplicationList,
         },

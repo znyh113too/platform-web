@@ -2,7 +2,7 @@
   <el-row>
     <el-col>
 
-      <MainHeader :login="false"></MainHeader>
+      <MainHeader :user="user"></MainHeader>
 
       <el-row>
         <el-col>
@@ -18,15 +18,27 @@
 
 
 <script>
-
+import { mapActions, mapState } from 'vuex'
 import Header from "../../components/Header"
 import Footer from "../../components/Footer"
 
 export default {
   data() {
     return {
-
     }
+  },
+  computed: {
+    ...mapState({
+      user: state => state.user.user
+    }),
+  },
+  methods:{
+    ...mapActions([
+      'getUser',
+    ]),
+  },
+  creared() {
+    this.getUser(localStorage.getItem('X-PLATFORM-TOKEN'))
   },
   components: {
     'MainHeader': Header,

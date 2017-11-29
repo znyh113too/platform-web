@@ -2,7 +2,7 @@
   <el-row>
     <el-col>
 
-      <MainHeader :login="true" :user="user"></MainHeader>
+      <MainHeader :user="user"></MainHeader>
 
       <el-row>
         <el-col>

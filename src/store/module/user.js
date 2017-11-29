@@ -5,7 +5,7 @@ import * as api from '../../core/api'
 
 const getState = () => ({
   user: {
-    accountName: '',
+    accountName:''
   }
 })
 
@@ -27,6 +27,7 @@ export const actions = {
 
   async logout({ commit, state }) {
     localStorage.removeItem('X-PLATFORM-TOKEN')
+    commit(types.USER_RESET)
   }
 
 }
@@ -36,7 +37,10 @@ export const mutations = {
     Object.assign(state.user, user)
     state.user.authorizedStatusName=getCompanyAuthenticationStateName(user.authorizedStatus)
     state.user.canRouterAuthentication=user.authorizedStatus==='1'||user.authorizedStatus==='3'
-  }
+  },
+  [types.USER_RESET](state) {
+    state.user={accountName:''}
+  },
 }
 
 export default {

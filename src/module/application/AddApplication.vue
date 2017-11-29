@@ -13,8 +13,8 @@
             <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
               <el-form-item label="应用图标:" prop="icon">
                 <img :src="unchoose" class="icon-picture" @click="upload('iconFile')">
-                <span class="text-tip picture-tip">格式支持png，推荐大小98*98像素图片</span>
-                <input style="display:none;" type="file" accept="image/*" @change="fileChanged('iconFile','unchoose','icon')" ref="iconFile" multiple="multiple">
+                <span class="text-tip picture-tip">格式支持png,jpg,jpeg推荐大小98*98像素图片</span>
+                <input style="display:none;" type="file" accept="image/png,image/jpeg,image/jpg" @change="fileChanged('iconFile','unchoose','icon')" ref="iconFile" multiple="multiple">
               </el-form-item>
               <el-form-item label="应用名称:" prop="name">
                 <el-input v-model="form.name"  name="name"></el-input>
@@ -53,6 +53,7 @@
 
 
 <script>
+import { URLValidate } from '../../utils/ValidateRule'
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -88,15 +89,18 @@ export default {
         ],
         name: [
           { required: true,  message: '请输入应用名称', trigger: 'blur' },
+          { max: 30, message: '应用名称不能超过30字符', trigger: 'blur' }
         ],
         tradeCode: [
           { required: true,  message: '请选择行业', trigger: 'blur' },
         ],
         domain: [
           { required: true,  message: '请输入官网地址', trigger: 'blur' },
+          { validator: URLValidate, trigger: 'blur' }
         ],
         description: [
           { required: true,  message: '请输入应用描述', trigger: 'blur' },
+          { max: 300, message: '应用描述不能超过300字符', trigger: 'blur' }
         ],
       },
     }
