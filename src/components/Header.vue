@@ -83,6 +83,10 @@ export default {
         this.$router.push({
           path: "/register"
         })
+      }else{
+        this.$router.push({
+          path: "/main"
+        })
       }
     },
     toRegister() {

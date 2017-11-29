@@ -37,7 +37,7 @@ export default {
       'getUser',
     ]),
   },
-  creared() {
+  created() {
     this.getUser(localStorage.getItem('X-PLATFORM-TOKEN'))
   },
   components: {

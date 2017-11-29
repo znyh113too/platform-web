@@ -13,7 +13,7 @@
 
             <el-row>
               <el-col>
-                <el-form ref="form" status-icon :rules="rules" :model="form" label-width="60px" label-position="left">
+                <el-form ref="form" status-icon :rules="rules" @keyup.enter.native="onSubmit()" :model="form" label-width="60px" label-position="left">
                   <el-form-item label="账号:" prop="username">
                     <el-input v-model="form.username" name="username"></el-input>
                   </el-form-item>
@@ -21,11 +21,11 @@
                     <el-input v-model="form.password" type="password" name="password"></el-input>
                   </el-form-item>
                   <div>
-                    <el-button style="width:100%" @click="onSubmit">登录</el-button>
+                    <el-button style="width:100%" @click="onSubmit()">登录</el-button>
                   </div>
                   <div class="link">
                     <span @click="resetPassword">重置密码</span>
-                    <span @click="toRegister" class="register-link">注册账户</span>
+                    <span @click="toRegister()" class="register-link">注册账户</span>
                   </div>
                 </el-form>
               </el-col>
