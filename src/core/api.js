@@ -1,6 +1,6 @@
 
 // const baseUrl = 'http://localhost:8081';
-const baseUrl = 'http://dev_gateway.bubi.cn/web';
+const baseUrl = 'http://dev-gateway.bubi.cn/web';
 
 export const LOGIN = baseUrl + '/account/login'
 export const GET_USER = baseUrl + '/account/info'
