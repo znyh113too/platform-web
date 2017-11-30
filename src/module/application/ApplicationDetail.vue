@@ -44,7 +44,7 @@
                 </div>
                 <div class="right-content">
                   <el-button v-if="!showSecret" type="text" size="medium" @click="doShowSecret()">显示</el-button>
-                  <el-button v-if="showSecret" type="text" size="medium">{{applicationInfo.appSecret}}</el-button>
+                  <span v-if="showSecret" class="secret">{{applicationInfo.appSecret}}</span>
                   <span class="desc">应用密钥是校验布比区块链开发者应用身份的密码，属于敏感内容。切记不要讲其直接给第三方或直接存储在代码中。</span>
                 </div>
               </div>
@@ -313,7 +313,7 @@ export default {
   border: 1px dashed red;
 }
 .desc{
-  padding: 20px 0px;
+  margin: 20px 0px;
   color: #666666;
   font-family: monospace;
   height: 40px;
@@ -330,6 +330,12 @@ export default {
 }
 .server{
   margin-top: 50px;
+}
+.secret{
+  color: #409EFF;
+  display: block;
+  height: 34px;
+  line-height: 34px;
 }
 .server .title{
   font-weight: bold;

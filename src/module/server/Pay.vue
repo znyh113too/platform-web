@@ -23,7 +23,7 @@
             <div class="info-content">
               <label>商户密钥</label>
               <el-button v-if="!showSecret" type="text" size="medium" @click="doShowSecret">显示</el-button>
-              <el-button v-if="showSecret" type="text" size="medium">{{configPay.merchantKey}}</el-button>
+              <span v-if="showSecret" style="color: #409EFF;height: 30px;line-height: 30px;" >{{configPay.merchantKey}}</span>
             </div>
             <div class="info-content">
               <label>公司名称</label>
