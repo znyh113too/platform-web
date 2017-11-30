@@ -281,6 +281,7 @@ export default {
       infoRules:{
         companyName: [
           { required: true,  message: '请输入企业名称', trigger: 'blur' },
+          { max: 50, message: '企业名称不能超过50字符', trigger: 'blur' }
         ],
         certificates: [
           { required: true, message: '请选择是否三证合一', trigger: 'change' },
