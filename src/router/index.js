@@ -3,6 +3,9 @@ import Router from 'vue-router'
 import store, { types } from '../store'
 import OutMain from '@/module/out/OutMain'
 import OutHome from '@/module/out/Home'
+import Doc from '@/module/out/Doc'
+import Platform from '@/module/out/docs/Platform'
+import Certification from '@/module/out/docs/Certification'
 import Login from '@/module/out/Login'
 import Register from '@/module/out/Register'
 import InnerMain from '@/module/inner/InnerMain'
@@ -35,6 +38,23 @@ let router = new Router({
           path: '/register',
           name: 'Register',
           component: Register
+        },
+        {
+          path: '/doc',
+          name: 'Doc',
+          component: Doc,
+          children: [
+            {
+              path: '',
+              name: 'Platform',
+              component: Platform,
+            },
+            {
+              path: 'certification',
+              name: 'Certification',
+              component: Certification,
+            },
+          ]
         },
       ]
     },{
@@ -85,7 +105,7 @@ router.beforeEach((to, from, next) => {
 })
 
 function canAccess(path){
-  return path==='/' || path==='/login' || path==='/register'
+  return path==='/' || path==='/login' || path==='/register' || path==="/doc" || path==="/certification"
 }
 
 export default router

@@ -38,7 +38,9 @@ export default {
     ]),
   },
   created() {
-    this.getUser(localStorage.getItem('X-PLATFORM-TOKEN'))
+    if(localStorage.getItem('X-PLATFORM-TOKEN')){
+      this.getUser(localStorage.getItem('X-PLATFORM-TOKEN'))
+    }
   },
   components: {
     'MainHeader': Header,

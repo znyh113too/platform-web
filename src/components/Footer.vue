@@ -3,7 +3,7 @@
     
     <el-col :span="4" :offset="1">
       <span class="footer-left" @click="notSupport()">关于我们</span>
-      <span class="footer-left" @click="notSupport()">开发文档</span>
+      <span class="footer-left" @click="toDoc()">开发文档</span>
     </el-col>
 
     <el-col :offset="16" :span="4">
@@ -27,6 +27,11 @@ export default {
         title: '还没有',
         message: '还没有'
       });
+    },
+    toDoc(){
+      this.$router.push({
+        path: "/doc",
+      })
     },
   }
 }
