@@ -105,7 +105,7 @@ router.beforeEach((to, from, next) => {
 })
 
 function canAccess(path){
-  return path==='/' || path==='/login' || path==='/register' || path==="/doc" || path==="/certification"
+  return path==='/' || path==='/login' || path==='/register' || path==="/doc" || path==="/doc/certification"
 }
 
 export default router
