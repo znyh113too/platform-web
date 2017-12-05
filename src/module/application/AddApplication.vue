@@ -128,9 +128,12 @@ export default {
     },
     fileChanged(fileRef,attr,formAttr){
       const item = this.$refs[fileRef].files[0]
+      if (item === undefined) {
+        return;
+      }
       this.uploadPicture(item).then(path=>{
         this.form[formAttr]=path
-        
+
         const reader = new FileReader()
         reader.onload = (e) => {
           this.$set(this, attr, e.target.result)
@@ -173,4 +176,3 @@ export default {
   height: 300px;
 }
 </style>
-
