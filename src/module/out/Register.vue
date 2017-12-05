@@ -49,7 +49,7 @@
                 </el-col>
                   <el-col :span="8">
                     <div class="right-content">
-                      已有账号？<span @click="toLogin" style="color:#3399FF;cursor:pointer;">立即登录</span>
+                      已有账号？<span @click="toLogin()" style="color:#3399FF;cursor:pointer;">立即登录</span>
                     </div>
                   </el-col>
               </el-row>
@@ -174,7 +174,7 @@
             <el-col style="width:640px;">
               <h1>恭喜您，完成布比开发者平台注册信息登记！</h1>
               <span class="success">我们尽快审核您的登记信息，预计时间1-2个工作日，审核结果将发至您提供的邮箱</span>
-              <el-button type="primary" style="margin: 15px;" @click="toLogin()">返回</el-button>
+              <el-button type="primary" style="margin: 15px;" @click="toMain()">返回</el-button>
             </el-col>
           </el-row>
 
@@ -418,6 +418,11 @@ export default {
     toLogin(){
       this.$router.push({
         path: "/login"
+      })
+    },
+    toMain(){
+      this.$router.push({
+        path: "/main"
       })
     },
     cityHandleChange(value){
