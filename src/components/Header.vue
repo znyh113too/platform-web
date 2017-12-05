@@ -20,10 +20,10 @@
           <!-- <el-col :offset="11" :span="2">
             <span class="top-menu">消息</span>
           </el-col> -->
-          <el-col :offset="8" :span="5">
+          <el-col :offset="7" :span="5">
             <span class="top-menu" @click="toAuth()">认证状态:<span class="auth">{{user.authorizedStatusName}}</span></span>
           </el-col> 
-          <el-col :span="4">
+          <el-col :span="5">
             <span class="top-menu">欢迎您:{{user.accountName}}</span>
           </el-col>
           <el-col :span="2">
